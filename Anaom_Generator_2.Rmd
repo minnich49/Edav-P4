@@ -1,0 +1,129 @@
+---
+title: "Data Parse"
+author: "Team"
+date: "February 13, 2016"
+output: html_document
+---
+```{r}
+library(dplyr)
+library(ggplot2)
+library(knitr)
+#install.packages("devtools")
+#devtools::install_github("twitter/AnomalyDetection")
+
+library(AnomalyDetection)
+library(googleVis)
+op <- options(gvis.plot.tag='chart')
+
+setwd("/Users/bobminnich/Documents/Columbia/Courses/DataVisualization/Final_Project/Edav-P4")
+
+#df = read.csv("311_Short Dataset.csv")
+#Filter for noises
+#Noise_filter = grepl("Noise",df$Complaint.Type)
+#df.noise = df[Noise_filter,]
+#setwd("/Users/bobminnich/Documents/Columbia/Courses/Applied_Data_Science/")
+#df = read.csv("311_1 Year.csv")
+#df = read.csv("311_Full_Filtered.csv")
+#df = df[1:(nrow(df)/8),]
+
+df = readRDS("full_filtered.rds")
+
+#setwd("/Users/bobminnich/Documents/Columbia/Courses/Applied_Data_Science/project2-group3/doc")
+
+```
+
+Parse Dates into columns
+```{r}
+#date_clean <- data.frame(do.call('rbind', strsplit(as.character(df$Created.Date),"\\s+")))
+#date_clean$X1 = as.Date(as.character(date_clean$X1),format ="%m/%d/%Y")
+#colnames(date_clean) = c("Date", "Time", "AM/PM")
+#df = cbind(df,date_clean)
+
+
+#date_clean <- data.frame(do.call('rbind', strsplit(as.character(df$Created.Date),"\\s+")))
+#month_clean <- data.frame(do.call('rbind', strsplit(as.character(Complaints_total$Date),"-")))
+
+
+```
+
+```{r}
+complaint_list = unique(df$Complaint.Type)
+df$Date = as.POSIXct(df$Date)
+df$Day = strftime(df$Date, "%d")
+df_2 = df[, c("Complaint.Type","Date")]
+df2 = group_by(df_2,Date,Complaint.Type)
+df3 = summarise(df2, count = n())
+complaint_list2 = complaint_list[1:3]
+
+
+anom_df = data.frame()
+for(i in complaint_list){
+  df4 = filter(df3, Complaint.Type == i)
+  df5 = df4[,c("Date","count")]
+  if(nrow(df5)>50){
+    res = AnomalyDetectionTs(df5, max_anoms=0.02, direction='both', plot=FALSE,piecewise_median_period_weeks = 3)
+  
+    if(nrow(res$anoms) > 0){
+      test_df = data.frame(res$anoms)
+      test_df$Complaint = i
+      anom_df = rbind(anom_df,test_df)
+    }
+  }
+}
+anom_df$timestamp = as.POSIXct(anom_df$timestamp)
+
+
+```
+
+
+```{r}
+Complaint_Lookup = "Blocked Driveway"
+plot_time = filter(df3,Complaint.Type == Complaint_Lookup )
+anom_df$timestamp = as.POSIXct(anom_df$timestamp)
+plot_anom = filter(anom_df, Complaint == Complaint_Lookup)
+ggplot(plot_time, aes(x=Date, y=count, colour = "blue"))+
+  geom_line() + 
+  geom_point(data = plot_anom, aes(x = timestamp, y = anoms, colour = "red"))
+
+```
+
+
+```{r,results='asis',tidy=FALSE, echo=FALSE, fig.align='left'}
+bubble = group_by(anom_df,Complaint)
+bubble2 = summarise(bubble,sum(anoms))
+colnames(bubble2) = c("Complaint", "Count")
+bubble2$index = c(1:nrow(bubble2))
+ggplot(bubble2, aes(x=index, y=log(Count), size=(Count), label=Complaint),guide=FALSE)+
+    geom_point(aes(size = log(Count), colour = Count, alpha=.02)) 
+
+
+```
+
+
+```{r,results='asis',tidy=FALSE, echo=FALSE, fig.align='left'}
+bubble2$log = log(bubble2$Count)
+Bubble <- gvisBubbleChart(bubble2, idvar = "Complaint", xvar = "index", 
+                          yvar = "Count", 
+                          colorvar = "Count", sizevar = "Count", 
+                          options = list(colorAxis = "{colors: ['lightblue', 'blue']}", 
+                          vAxis = "{title:'Mean Income'}", hAxis = "{title:'First Entry'}", 
+                         width = 1000, height = 1000, bubble = "{textStyle:{color: 'none',fontName: 'Times-Roman', fontSize:9}}",           explorer = "{actions: ['dragToZoom', 'rightClickToReset'] }",
+                         title = "Mean Income Bubble Chart"))
+
+plot(Bubble)
+
+```
+
+```{r,results='asis',tidy=FALSE, echo=FALSE, fig.align='left'}
+bubble2$log = log(bubble2$Count)
+Bubble <- gvisBubbleChart(bubble2, idvar = "Complaint", xvar = "index", 
+                          yvar = "log", 
+                          colorvar = "log", sizevar = "log", 
+                          options = list(colorAxis = "{colors: ['lightblue', 'blue']}", 
+                          vAxis = "{title:'Mean Income'}", hAxis = "{title:'First Entry'}", 
+                         width = 1000, height = 1000, bubble = "{textStyle:{color: 'none',fontName: 'Times-Roman', fontSize:9}}",           explorer = "{actions: ['dragToZoom', 'rightClickToReset'] }",
+                         title = "Mean Income Bubble Chart"))
+
+plot(Bubble)
+
+```
