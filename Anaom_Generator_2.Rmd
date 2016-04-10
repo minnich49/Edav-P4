@@ -184,7 +184,7 @@ ggplot(df3,aes(x = Date,y = count))+
 
 
 ```{r}
-df2 = group_by(filter(df,Year == 2015 & Month == 1 & Day == 7),Day,Month,Year)
+df2 = group_by(filter(df,Year == 2015 & Month == "01" & Day == "07"),Day,Month,Year)
 df3 = summarise(df2, count = n())
 df3$Date = paste(df3$Month,df3$Day,df3$Year,sep = "/")
 df3$Date = as.Date(as.character(df3$Date),format ="%m/%d/%Y")
@@ -198,3 +198,30 @@ res$plot
 res$anoms[order(res$anoms$anoms),]
 
 ```
+
+```{r}
+test = filter(df, Date > as.POSIXct("2015-01-06") & Date < as.POSIXct("2015-01-08"))
+df2 = group_by(filter(test,Year == 2015 & Month == "01" & Day == "07"),Day,Month,Year)
+df3 = summarise(df2, count = n())
+
+test_df = read.csv("311_Jan_07_2015.csv")
+```
+
+
+```{r}
+df_test = read.csv("test.csv")
+colnames(df_test) = c("Date","Complaint.Type")
+
+df_test$Date = as.Date(as.character(df_test$Date),format ="%m/%d/%Y")
+df_test$Date = as.POSIXct(df_test$Date)
+df_test$Day = strftime(df_test$Date, "%d")
+df_test$Month = strftime(df_test$Date, "%m")
+df_test$Year = strftime(df_test$Date, "%Y")
+test = filter(test,Year == 2015 & Month == "01" & Day == "07")
+df2 = group_by(,Day,Month,Year)
+df3 = summarise(df2, count = n())
+
+write.csv(test,"Jan_07_2015.csv")
+
+```
+
