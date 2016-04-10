@@ -17,7 +17,8 @@ op <- options(gvis.plot.tag='chart')
 
 setwd("/Users/bobminnich/Documents/Columbia/Courses/DataVisualization/Final_Project/Edav-P4")
 
-#df = read.csv("311_Short Dataset.csv")
+#df = read.csv("311_full.csv")
+#saveRDS(df,"full_filtered2.rds")
 #Filter for noises
 #Noise_filter = grepl("Noise",df$Complaint.Type)
 #df.noise = df[Noise_filter,]
@@ -26,7 +27,7 @@ setwd("/Users/bobminnich/Documents/Columbia/Courses/DataVisualization/Final_Proj
 #df = read.csv("311_Full_Filtered.csv")
 #df = df[1:(nrow(df)/8),]
 
-df = readRDS("full_filtered.rds")
+df = readRDS("full_filtered2.rds")
 
 #setwd("/Users/bobminnich/Documents/Columbia/Courses/Applied_Data_Science/project2-group3/doc")
 
@@ -47,9 +48,14 @@ Parse Dates into columns
 ```
 
 ```{r}
+colnames(df) = c("Date","Complaint.Type")
 complaint_list = unique(df$Complaint.Type)
+df$Date = as.Date(as.character(df$Date),format ="%m/%d/%Y")
 df$Date = as.POSIXct(df$Date)
 df$Day = strftime(df$Date, "%d")
+df$Month = strftime(df$Date, "%m")
+df$Year = strftime(df$Date, "%Y")
+
 df_2 = df[, c("Complaint.Type","Date")]
 df2 = group_by(df_2,Date,Complaint.Type)
 df3 = summarise(df2, count = n())
@@ -77,7 +83,7 @@ anom_df$timestamp = as.POSIXct(anom_df$timestamp)
 
 
 ```{r}
-Complaint_Lookup = "Blocked Driveway"
+Complaint_Lookup = "HEAT/HOT WATER"
 plot_time = filter(df3,Complaint.Type == Complaint_Lookup )
 anom_df$timestamp = as.POSIXct(anom_df$timestamp)
 plot_anom = filter(anom_df, Complaint == Complaint_Lookup)
@@ -125,5 +131,70 @@ Bubble <- gvisBubbleChart(bubble2, idvar = "Complaint", xvar = "index",
                          title = "Mean Income Bubble Chart"))
 
 plot(Bubble)
+
+```
+
+
+```{r}
+
+df2 = group_by(df,Date)
+df3 = summarise(df2, count = n())
+res = AnomalyDetectionTs(df3, max_anoms=0.02, direction='both', plot=TRUE,piecewise_median_period_weeks = 3)
+beg = as.Date("2016-01-04")
+end = as.Date("2016-01-05")
+res$plot
+
+res$anoms[order(res$anoms$anoms),]
+
+ggplot(df3,aes(x = Date,y = count))+ 
+  geom_line() +
+  xlim(as.POSIXct("2013-01-20"),as.POSIXct("2013-01-24"))
+
+count=  0
+for(i in 1:nrow(df3)){
+  if(df3$count[i] == 9033){
+    count= count + 1
+  }
+}
+print(count)
+```
+
+
+
+```{r}
+df2 = group_by(df,Day,Month,Year)
+df3 = summarise(df2, count = n())
+df3$Date = paste(df3$Month,df3$Day,df3$Year,sep = "/")
+df3$Date = as.Date(as.character(df3$Date),format ="%m/%d/%Y")
+df3$Date = as.POSIXct(df3$Date)
+
+res = AnomalyDetectionTs(df3, max_anoms=0.02, direction='both', plot=TRUE,piecewise_median_period_weeks = 3)
+beg = as.Date("2016-01-04")
+end = as.Date("2016-01-05")
+res$plot
+
+res$anoms[order(res$anoms$anoms),]
+
+ggplot(df3,aes(x = Date,y = count))+ 
+  geom_line() +
+  xlim(as.POSIXct("2013-01-20"),as.POSIXct("2013-01-24"))
+
+```
+
+
+
+```{r}
+df2 = group_by(filter(df,Year == 2015 & Month == 1 & Day == 7),Day,Month,Year)
+df3 = summarise(df2, count = n())
+df3$Date = paste(df3$Month,df3$Day,df3$Year,sep = "/")
+df3$Date = as.Date(as.character(df3$Date),format ="%m/%d/%Y")
+df3$Date = as.POSIXct(df3$Date)
+
+res = AnomalyDetectionTs(df3, max_anoms=0.02, direction='both', plot=TRUE,piecewise_median_period_weeks = 3)
+beg = as.Date("2016-01-04")
+end = as.Date("2016-01-05")
+res$plot
+
+res$anoms[order(res$anoms$anoms),]
 
 ```
