@@ -91,7 +91,7 @@ zip_choropleth(heat_response_min, county_zoom=nyc_fips,
 #heat_response_max$region <- as.factor(heat_response_max$region)
 #save(heat_response_max, file="heat_response_max.Rda")
 load("heat_response_max.Rda")
-zip_choropleth(heat_response_min, county_zoom=nyc_fips,
+zip_choropleth(heat_response_max, county_zoom=nyc_fips,
             title="Maximum time for HPD to close the heat/hot water claims",
             legend="Days")
 ```
