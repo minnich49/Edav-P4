@@ -116,14 +116,14 @@ zipZoom <- function(df, zipcode, writetitle, writelegend){
 # Upper West Side
 manhattan_uwe = c("10025", "10026", "10027", "10030")
 zipZoom(heat_response, manhattan_uwe, 
-        "Zoom in Upper West Side", "Days")
+        "Zoom in Upper West Side", "Average Days")
 ```
 ```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width=4, fig.align='center', out.extra='style="float:right"'}
 # Financial District 
 manhattan_wall = c("10005", "10271", "10038", "10280", "10006", 
                     "10279", "10007", "10282", "10004")
 zipZoom(heat_response, manhattan_wall, 
-        "Zoom in Wall Street Area", "Days")
+        "Zoom in Wall Street Area", "Average Days")
 ```
 
 > #### Street Light Condition Complaints
