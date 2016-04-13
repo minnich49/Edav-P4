@@ -1,0 +1,149 @@
+---
+title: "Sankey plots"
+output: html_document
+---
+
+> ####   Sankey plots between agencies, complaints and borough during high volumes of complaints: 
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+setwd("C:\\Users\\HS\\Desktop\\school\\classes\\VIS\\HW4\\git2\\Edav-P4\\hs2865")
+
+library(dplyr)
+library(plyr)
+library(googleVis)
+op <- options(gvis.plot.tag="chart")
+library(circlize)
+
+# install.packages(c("devtools","RJSONIO", "knitr", "shiny", "httpuv"))
+# library(devtools)
+# install_github("mages/googleVis")
+
+data <- read.csv('../Jan_08_2015.csv', header=T, na.strings=c("","NA"))
+data <- data[-which(is.na(data$Closed.Date)),]
+data_f = data.frame(data)
+
+
+agency_borough_complaint_count <- count(data_f, c('Agency', 'Borough', 'Complaint.Type'))
+
+# agency list
+agency_count <- count(data_f, c('Agency'))
+agency_count_top5 = agency_count[order(agency_count$freq, decreasing=TRUE), ]
+
+agency_list = agency_count_top5$Agency
+borough_list = unique(agency_borough_complaint_count$Borough)
+
+tmp_agency_borough_complaint_count = data.frame(as.factor(1), as.factor(1), as.factor(1), as.integer(1)) 
+colnames(tmp_agency_borough_complaint_count) = colnames(agency_borough_complaint_count)
+
+for (i in 1:length(agency_list)) {
+  for (j in 1:length(borough_list)) {
+  tmp_agency_borough_complaint_count = rbind(tmp_agency_borough_complaint_count, agency_borough_complaint_count[(agency_borough_complaint_count$Agency == agency_list[i]) & (agency_borough_complaint_count$Borough == borough_list[j]), ])
+  }
+}
+tmp_agency_borough_complaint_count = tmp_agency_borough_complaint_count[-1, ]
+
+
+sankey1_part1 = tmp_agency_borough_complaint_count[, c("Agency", "Borough", "freq")]
+colnames(sankey1_part1) = c("from", "to", "freq")
+sankey1_part1 = aggregate(sankey1_part1$freq, by=list(from=sankey1_part1$from, to=sankey1_part1$to), FUN=sum)
+colnames(sankey1_part1) = c("from", "to", "freq")
+
+sankey1_part2 = tmp_agency_borough_complaint_count[, c("Borough", "Complaint.Type", "freq")]
+colnames(sankey1_part2) = c("from", "to", "freq")
+sankey1_part2$to = as.character(sankey1_part2$to)
+sankey1_part2[sankey1_part2$freq < 50, 'to'] <- "others"
+sankey1_part2$to = as.factor(sankey1_part2$to)
+
+sankey1_part3 = tmp_agency_borough_complaint_count[, c("Complaint.Type", "Agency", "freq")]
+colnames(sankey1_part3) = c("from", "to", "freq")
+sankey1_part3$from = as.character(sankey1_part3$from)
+sankey1_part3[sankey1_part3$freq < 50, 'from'] <- "others"
+sankey1_part3$from = as.factor(sankey1_part3$from)
+sankey1_part3 = aggregate(sankey1_part3$freq, by=list(from=sankey1_part3$from, to=sankey1_part3$to), FUN=sum)
+colnames(sankey1_part3) = c("from", "to", "freq")
+
+# sankey1_part1 : Agency - Borough
+# sankey1_part2 : Borough - Complaints
+# sankey1_part3 : Complaints - Borough
+
+## Complaints - Agency - Borough
+sankey_complaints_Agency_Borough_data = rbind(sankey1_part3, sankey1_part1)
+sankey_complaints_Agency_Borough_plot <- gvisSankey(sankey_complaints_Agency_Borough_data, 
+            from="from", 
+            to="to", 
+            weight="freq",
+            options=list(
+               width=800
+               )
+            )
+
+
+```
+
+```{r results='asis', tidy=TRUE}
+plot(sankey_complaints_Agency_Borough_plot)
+```
+
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+## Agency - Borough - Complaints
+sankey_Agency_Borough_complaints_data = rbind(sankey1_part1, sankey1_part2)
+sankey_Agency_Borough_complaints_plot <- gvisSankey(sankey_Agency_Borough_complaints_data, 
+            from="from", 
+            to="to", 
+            weight="freq",
+            options=list(
+               width=800
+               )
+            )
+```
+
+<br />
+<br />
+```{r results='asis', tidy=TRUE}
+plot(sankey_Agency_Borough_complaints_plot)
+```
+
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+agency_complaint_count <- count(data_f, c('Agency', 'Complaint.Type'))
+agency_complaint_count <- agency_complaint_count[agency_complaint_count$freq > 50,]
+sankey2_plot <- gvisSankey(agency_complaint_count, 
+            from="Agency", 
+            to="Complaint.Type", 
+            weight="freq",
+            options=list(
+               width=800
+               )
+            )
+
+```
+
+<br />
+<br />
+
+```{r results='asis', tidy=TRUE}
+plot(sankey2_plot)
+```
+
+
+> ####   Circos between agencies and complaints during high volumes of complaints: 
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+cir_agency_complaint_count = agency_complaint_count[agency_complaint_count$freq > 70,]
+colnames(cir_agency_complaint_count) = c("from", "to", "value")
+chordDiagram(cir_agency_complaint_count, annotationTrack = "grid", preAllocateTracks = 1)
+circos.trackPlotRegion(track.index = 1, panel.fun = function(x, y) {
+  xlim = get.cell.meta.data("xlim")
+  xplot = get.cell.meta.data("xplot")
+  ylim = get.cell.meta.data("ylim")
+  sector.name = get.cell.meta.data("sector.index")
+  if(abs(xplot[2] - xplot[1]) < 20) {
+    circos.text(mean(xlim), ylim[1], sector.name, facing = "clockwise",
+    niceFacing = TRUE, adj = c(0, 0.5), cex= 0.6)
+  } else {
+    circos.text(mean(xlim), ylim[1], sector.name, facing = "inside",
+    niceFacing = TRUE, adj = c(0.5, 0), cex= 0.7)
+  }
+}, bg.border = NA)
+```
