@@ -1,0 +1,97 @@
+---
+title: "Predictive_Model"
+author: "Team"
+date: "April 28, 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(dplyr)
+library(ggplot2)
+library(knitr)
+library(zoo)
+#install.packages("devtools")
+#devtools::install_github("twitter/AnomalyDetection")
+
+library(AnomalyDetection)
+library(googleVis)
+op <- options(gvis.plot.tag='chart')
+
+setwd("/Users/bobminnich/Documents/Columbia/Courses/DataVisualization/Final_Project/Edav-P4")
+
+df = readRDS("full_filtered2.rds")
+df$Created.Date = as.character(df$Created.Date)
+```
+
+```{r}
+colnames(df) = c("Date","Complaint.Type")
+complaint_list = unique(df$Complaint.Type)
+df$Date = as.Date(as.character(df$Date),format ="%m/%d/%Y")
+df$Date = as.POSIXct(df$Date)
+df$Day = strftime(df$Date, "%d")
+df$Month = strftime(df$Date, "%m")
+df$Year = strftime(df$Date, "%Y")
+df$cdate = paste(df$Day,df$Month,df$Year)
+df2 = df%>%group_by(cdate)%>%summarise(count = n())
+
+df2 = df%>%group_by(Day,Month,Year)%>%summarise(count = n())
+
+#write.csv(df2,"Day_Month_Year_Count.csv")
+```
+
+
+```{r}
+df3 = data.frame(1:nrow(df2))
+colnames(df3) = "index"
+df3$count = df2$count
+rmean = data.frame(rollmean(df3,300, fill = FALSE))
+rmean = rmean[!(rmean$index==0),] 
+
+rsd = rollapply(df3, width = 3, FUN = sd, na.pad = TRUE)
+
+rollapply(1:100, width = 3, FUN = sd, na.pad = TRUE)
+plot(df3)
+
+ggplot() + 
+  geom_line(data = df3, aes(x = index, y = count, color = "red")) +
+  geom_line(data = rmean, aes(x = index, y = count, color = "blue")) +
+  ggtitle("Rolling Average")
+
+lm.fit=lm(count ~ index, data = df3 )
+summary(lm.fit)
+plot(lm.fit)
+```
+
+
+```{r}
+#jj has time as the index
+
+ggplot(df3, aes(x=index, y=count)) +
+    geom_point(shape=1) +    # Use hollow circles
+  geom_smooth(method = "lm", formula = y ~ splines::bs(x, 3), se = TRUE)#+
+    #ylim(4500,5000)
+
+```
+
+
+```{r}
+library(lubridate)
+a = df$Created.Date[1]
+df$Created.Date = mdy_hms(df$Created.Date)
+
+df2 = df
+df2$day = day(df2$Created.Date)
+df2$year = year(df2$Created.Date)
+df2$month = month(df2$Created.Date)
+
+df3 = group_by(df2, day,month, year) %>%summarise(count = n())
+df3$date = paste(df3$day,df3$month,df3$year, sep = "/")
+df3$date = dmy(df3$date)
+acf(df3$count, 20)     # ACF to lag 20 - no graph shown... keep reading
+pacf(dljj, 20)    # PACF to lag 20 - no graph shown... keep reading
+
+acf2(df3$count)        # this is what you'll see below
+
+plot(dog <- stl(log(df3$count), "per"))  
+
+```

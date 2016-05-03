@@ -48,6 +48,7 @@ Parse Dates into columns
 ```
 
 ```{r}
+#Will Produce overall anamolies for all types of complaints if they exist
 colnames(df) = c("Date","Complaint.Type")
 complaint_list = unique(df$Complaint.Type)
 df$Date = as.Date(as.character(df$Date),format ="%m/%d/%Y")
@@ -81,15 +82,74 @@ anom_df$timestamp = as.POSIXct(anom_df$timestamp)
 
 ```
 
+```{r}
+df4 = filter(df3, Date < "2015-01-08"  & "2015-01-06" < Date)
+plot_anom = filter(anom_df, timestamp > as.POSIXct("2015-01-07")  & as.POSIXct("2015-01-08") >= timestamp)
+plot_anom2 = filter(plot_anom,Complaint != "HEAT/HOT WATER")
+ggplot(plot_anom2) +
+  geom_bar(aes(x=Complaint,y=anoms, fill = Complaint), stat="identity",colour = "Anamolies") +
+  coord_flip() + 
+  guides(fill=FALSE) +
+  ylab("Number of Complaints") +
+  
+  ggtitle("Anomalies Detected on Jan 8th, 2015 ")
+
+```
 
 ```{r}
-Complaint_Lookup = "HEAT/HOT WATER"
-plot_time = filter(df3,Complaint.Type == Complaint_Lookup )
+df_2 = df[, c("Complaint.Type","Date")]
+df2 = group_by(df_2,Date,Complaint.Type)
+df3 = summarise(df2, count = n())
+
+Complaint_Lookup = c("Animal Abuse", "Water Conservation", "OUTSIDE BUILDING", "Non-Residential Heat", "DOOR/WINDOW", "Animal Abuse")
+Complaint_Lookup = c("Animal Abuse", "Water Conservation", "OUTSIDE BUILDING", "Non-Residential Heat",  "Animal Abuse")
+
+#Complaint_Lookup = c("HEAT/HOT WATER")
+
+plot_time = filter(df3,Complaint.Type %in% Complaint_Lookup )
 anom_df$timestamp = as.POSIXct(anom_df$timestamp)
 plot_anom = filter(anom_df, Complaint == Complaint_Lookup)
-ggplot(plot_time, aes(x=Date, y=count, colour = "blue"))+
+ggplot(plot_time, aes(x=Date, y=count, colour = Complaint.Type )) +  
   geom_line() + 
-  geom_point(data = plot_anom, aes(x = timestamp, y = anoms, colour = "red"))
+  geom_point(data = plot_anom, aes(x = timestamp, y = anoms, colour = "Anamolies")) +
+  ggtitle("Anamoly Detection for Multiple Complaints") + 
+  ylab("Number of Complaints per Day") + 
+  xlim(as.POSIXct("2014-01-01"),max(plot_time$Date))+
+  ylim(0,125)
+
+Complaint_Lookup = c("HEAT/HOT WATER")
+plot_time = filter(df3,Complaint.Type %in% Complaint_Lookup )
+anom_df$timestamp = as.POSIXct(anom_df$timestamp)
+plot_anom = filter(anom_df, Complaint == Complaint_Lookup)
+ggplot(plot_time, aes(x=Date, y=count, colour = Complaint.Type ))+ theme(legend.position = "none") + 
+  geom_line() + 
+  geom_point(data = plot_anom, aes(x = timestamp, y = anoms, colour = "red")) +
+  ggtitle("Anamoly Detection for Heat and Hot Water") + 
+  theme(legend.position = "none") +
+  ylab("Number of Complaints per Day") 
+
+ggplot(plot_time, aes(x=Date, y=count, colour = Complaint.Type ))+ theme(legend.position = "none") + 
+  geom_line() + 
+  geom_point(data = plot_anom, aes(x = timestamp, y = anoms, colour = "red")) +
+  ggtitle("Anamoly Detection for Heat and Hot Water") + 
+  theme(legend.position = "none") +
+  ylab("Number of Complaints per Day")
+
+
+
+df2 = group_by(df,Date)
+df3_all = summarise(df2, count = n())
+
+
+res = AnomalyDetectionTs(df3_all, max_anoms=0.02, direction='both', plot=TRUE,piecewise_median_period_weeks = 3)
+
+ggplot(df3_all, aes(x=Date, y=count, color = "blue" ))+ theme(legend.position = "none") + 
+  geom_line() + 
+  geom_point(data = res$anoms, aes(x = timestamp, y = anoms, colour = "red")) +
+  ggtitle("Anamoly Detection for Complaint Dataset") + 
+  theme(legend.position = "none") +
+  ylab("Number of Complaints per Day")
+
 
 ```
 
@@ -142,7 +202,13 @@ df3 = summarise(df2, count = n())
 res = AnomalyDetectionTs(df3, max_anoms=0.02, direction='both', plot=TRUE,piecewise_median_period_weeks = 3)
 beg = as.Date("2016-01-04")
 end = as.Date("2016-01-05")
-res$plot
+
+res$plot+ 
+xlab("Date") +
+ylab("Number of Complaints per Day") + 
+ggtitle("2014-2015 Anomalies of Total Complaints")+
+  xlim(as.POSIXct("2014-01-01"),as.POSIXct("2015-12-31"))+
+  geom_point(aes(x = as.POSIXct("2016-01-05"), y= 11,000), color = "red")
 
 res$anoms[order(res$anoms$anoms),]
 
@@ -210,18 +276,35 @@ test_df = read.csv("311_Jan_07_2015.csv")
 
 ```{r}
 df_test = read.csv("test.csv")
-colnames(df_test) = c("Date","Complaint.Type")
+#colnames(df_test) = c("Date","Complaint.Type")
 
-df_test$Date = as.Date(as.character(df_test$Date),format ="%m/%d/%Y")
-df_test$Date = as.POSIXct(df_test$Date)
-df_test$Day = strftime(df_test$Date, "%d")
-df_test$Month = strftime(df_test$Date, "%m")
-df_test$Year = strftime(df_test$Date, "%Y")
-test = filter(test,Year == 2015 & Month == "01" & Day == "07")
-df2 = group_by(,Day,Month,Year)
+#df_test$Created.Date2 = as.Date(as.character(df_test$Created.Date),format ="%m/%d/%Y %I:%M:%S %p")
+df_test$Created.Date2 = as.POSIXct(df_test$Created.Date,format ="%m/%d/%Y %I:%M:%S %p")
+df_test$Day = strftime(df_test$Created.Date2, "%d")
+df_test$Month = strftime(df_test$Created.Date2, "%m")
+df_test$Year = strftime(df_test$Created.Date2, "%Y")
+
+df2 = group_by(df_test,Day,Month,Year)
 df3 = summarise(df2, count = n())
 
-write.csv(test,"Jan_07_2015.csv")
+df3$Date = paste(df3$Month,df3$Day,df3$Year,sep = "/")
+df3$Date = as.Date(as.character(df3$Date),format ="%m/%d/%Y")
+df3$Date = as.POSIXct(df3$Date)
+
+
+df4 = df3[,c("Date","count")]
+df4 = df4[complete.cases(df4),]
+df4[order(df4$count),]
+
+res = AnomalyDetectionTs(df4, max_anoms=0.05, direction='both', plot=TRUE,piecewise_median_period_weeks = 2)
+res
+res$anoms[order(res$anoms$anoms),]
+
+test = filter(df_test,Year == 2015 & Month == "01" & Day == "08")
+df2 = group_by(test,Day,Month,Year)
+df3 = summarise(df2, count = n())
+
+write.csv(test,"Jan_08_2015.csv")
 
 ```
 

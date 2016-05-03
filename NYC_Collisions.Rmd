@@ -1,0 +1,109 @@
+---
+title: "NYC_Colissions"
+author: "Team"
+date: "February 12, 2016"
+output: html_document
+---
+Parse Data
+```{r}
+setwd("/Users/bobminnich/Documents/Columbia/Courses/DataVisualization/Final_Project/Edav-P4")
+library(ggplot2)
+
+#Uncomment  ALL BELOW if you wish to run preprocessing
+#NYC_COMBINED is the NYC Collisions Data set from Open NYC and must be downloaded seperately. The pre-processing has already been run and the output file can be loaded without running the following code. Skip to below where output.RDS is loaded.
+
+
+#output = read.csv("NYC_Combined.csv",na.strings=c(""," ",NA))
+#output$DATE =  as.Date(as.character(output$DATE),format ="%m/%d/%y")
+
+
+
+#knn_input = output[,c("LATITUDE","LONGITUDE","BOROUGH")]
+#knn_input$LATITUDE = as.numeric(knn_input$LATITUDE)
+#knn_input$LONGITUDE = as.numeric(knn_input$LONGITUDE)
+
+#test_index = is.na(knn_input$BOROUGH )
+#train_index = complete.cases(knn_input$BOROUGH )
+#test = knn_input
+#train = knn_input[train_index,]
+
+#write.csv(test,"test.csv")
+#write.csv(train,"train.csv",)
+
+
+#RUN PYTHON FILE LOCATED IN SAME FOLDER,THEN THE FOLLOWING LINE
+#output$BOROUGH = labels$X0
+#saveRDS(output,"output.RDS")
+
+```
+
+
+```{r}
+library(dplyr)
+library(lubridate)
+output = readRDS("output.RDS")
+output$DATE = as.character(output$DATE)
+dates = as.data.frame(ymd(output$DATE))
+colnames(dates) = "date"
+
+dates$Borough = output$BOROUGH
+dates$month = month(dates$date)
+dates$year = year(dates$date)
+dates$day = day(dates$date)
+
+
+
+agg = dates %>% group_by(day,month,year,Borough)%>%summarise(collisions = n())
+agg2 = dates %>% group_by(day,month,year)%>%summarise(collisions = n())
+agg3 = dates%>% filter(year == 2015, month == 01, day == 08)%>% group_by(day,month,year)%>%summarise(collisions = n())
+agg4 = dates%>% filter(year == 2015, month == 01, day == 08)%>% group_by(day,month,year,Borough)%>%summarise(collisions = n())
+
+```
+
+```{r}
+library(RColorBrewer)
+col = brewer.pal(3,"Oranges")[2]
+col2 = brewer.pal(3,"Set1")[1]
+
+min_date = min(agg2$year)
+max_date = max(agg2$year)
+title_text = paste(min_date,"-",max_date,sep = "")
+a = ggplot(agg2, aes(x=collisions)) + geom_histogram(binwidth = 10,fill=col)+
+  ggtitle(paste("Number of Collisions per Day",title_text,sep = ": "))+
+  xlab("Number of Collisions Per Day")+
+  ylab("Number Days") +
+  geom_vline(aes(xintercept =agg3$collisions),color = col2)+
+  annotate("text", x =agg3$collisions + 220,y = 85,label = "Car Collisions on Jan 08,2015")
+
+
+b = ggplot(agg, aes(x=Borough,y = collisions,color=Borough)) + 
+  geom_violin() + 
+  geom_boxplot(width=0.1)+
+  theme(axis.text.x = element_text( size=6))+
+    annotate("point",x = factor("BRONX"), y = agg4$collisions[1])+
+    annotate("point",x = factor("BROOKLYN"), y = agg4$collisions[2])+
+    annotate("point",x = factor("MANHATTAN"), y = agg4$collisions[3])+
+    annotate("point",x = factor("QUEENS"), y = agg4$collisions[4])+
+    annotate("point",x = factor("STATEN ISLAND"), y = agg4$collisions[5])+
+  xlab("Black Point indicates collisions on Jan 08,205") +
+    theme(axis.title.x = element_text( size=6))+
+  ggtitle(paste("Number of Collisions per Day",title_text,sep = ": "))
+b
+
+# library(grid)
+#   #summary(subset(TWOMINS1, HACKINT == FALSE)$SM)
+#   MainTitle = "Distribution of Number of Collisions per Day: 2012 - 2015"
+#   grid.newpage()
+#   pushViewport(viewport(layout = grid.layout(3, 1, heights = unit(c(0.5, 5,5), "null"))))
+#   grid.text(MainTitle, vp = viewport(layout.pos.row = 1, layout.pos.col = 1))
+#   print(a, vp = viewport(layout.pos.row = 2, layout.pos.col = 1),newpage=FALSE)
+#   print(b, vp = viewport(layout.pos.row = 3, layout.pos.col = 1),newpage=FALSE)
+#   popViewport(1)
+jpeg("figs/Car_Histogram.jpg")
+a
+dev.off()
+
+jpeg("figs/Car_Violin_Bur.jpg")
+b
+dev.off()
+```
