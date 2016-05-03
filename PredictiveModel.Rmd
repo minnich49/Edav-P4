@@ -76,7 +76,8 @@ ggplot(df3, aes(x=index, y=count)) +
 
 ```{r}
 library(lubridate)
-a = df$Created.Date[1]
+library(zoo)
+
 df$Created.Date = mdy_hms(df$Created.Date)
 
 df2 = df
@@ -87,11 +88,49 @@ df2$month = month(df2$Created.Date)
 df3 = group_by(df2, day,month, year) %>%summarise(count = n())
 df3$date = paste(df3$day,df3$month,df3$year, sep = "/")
 df3$date = dmy(df3$date)
-acf(df3$count, 20)     # ACF to lag 20 - no graph shown... keep reading
-pacf(dljj, 20)    # PACF to lag 20 - no graph shown... keep reading
 
-acf2(df3$count)        # this is what you'll see below
+df4 = data.frame(df3$date)
+df4$count = df3$count
+colnames(df4) = c("date", "count")
 
-plot(dog <- stl(log(df3$count), "per"))  
+myts <- ts(df4$count, start=c(year(min(df4$date)), month(min(df4$date))), end=c(year(max(df4$date)), month(max(df4$date))), frequency=12*length(unique(df3$year))) 
+
+library(ggplot2)
+library(scales)
+library(zoo)
+
+autoplot(as.zoo(myts))+ 
+  scale_x_yearqtr()+
+  ggtitle("Time Series Plot")
+
+decomp = decompose(myts)
+plot(decomp$seasonal)
+plot(myts)
+plot(myts - decomp$seasonal)
+
+temp = decompose(myts - decomp$seasonal)
+#ggplot(myts, myts)
+
+fit <- stl(myts, s.window="period")
+plot(fit)
+
+monthplot(myts)
+library(forecast)
+
+seasonplot(myts)
+
+
+# fit an ARIMA model of order P, D, Q
+fit <- arima(myts, order= c(365, 0, 0))
+#plot(fit)
+# predictive accuracy
+library(forecast)
+accuracy(fit)
+require(graphics)
+nobs(fit)
+tsdiag(fit)
+
+predict(fit, 265)
+
 
 ```

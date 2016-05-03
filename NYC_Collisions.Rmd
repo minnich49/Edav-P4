@@ -73,7 +73,7 @@ a = ggplot(agg2, aes(x=collisions)) + geom_histogram(binwidth = 10,fill=col)+
   xlab("Number of Collisions Per Day")+
   ylab("Number Days") +
   geom_vline(aes(xintercept =agg3$collisions),color = col2)+
-  annotate("text", x =agg3$collisions + 220,y = 85,label = "Car Collisions on Jan 08,2015")
+  annotate("text", x =agg3$collisions + 220,y = 85,label = "Car Collisions on Jan 08,2015", size = 3)
 
 
 b = ggplot(agg, aes(x=Borough,y = collisions,color=Borough)) + 
@@ -99,11 +99,11 @@ b
 #   print(a, vp = viewport(layout.pos.row = 2, layout.pos.col = 1),newpage=FALSE)
 #   print(b, vp = viewport(layout.pos.row = 3, layout.pos.col = 1),newpage=FALSE)
 #   popViewport(1)
-jpeg("figs/Car_Histogram.jpg")
+png("figs/Car_Histogram.png",width = 4, height = 4, units = 'in', res = 300)
 a
 dev.off()
 
-jpeg("figs/Car_Violin_Bur.jpg")
+png("figs/Car_Violin_Bur.png",width = 6, height = 4, units = 'in', res = 300)
 b
 dev.off()
 ```
