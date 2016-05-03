@@ -1,0 +1,27 @@
+<title> EDAV Final Project </title>
+
+<style>
+  .small-skip {
+     margin-bottom: 0.35cm;
+  }
+</style>
+
+<font size="6"> NYC Chaos Day</font> <br>
+
+<font size="5"> - Your Teamname Here </font>
+
+```{r, message=F, warning=F, echo = FALSE, fig.align='center'}
+library(plyr)
+
+```
+<iframe src="https://patrick-rogan.shinyapps.io/shiny/" width="100%" height="600px" frameborder="0"></iframe>
+
+## Introduction
+Some text about why shiny is awesome
+<br><br>
+
+<br><br>
+
+## References
+Example Reference. https://www.e <br>
+
