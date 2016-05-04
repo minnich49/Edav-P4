@@ -61,11 +61,11 @@ AS we seen at examples of sankey diagram, HPD had the most complaints. Then, we 
 
 Here is the description information of complains directed to HPD at the anomaly day (Jan/8/2015).
 
-```{r, echo=FALSE, fig.align='center'}
+```{r, echo=FALSE, fig.align='center', fig.width = 3, fig.height = 3}
 dtm = JAN_08_2015_mining_HPD[[1]]
 mfreq = colSums(as.matrix(dtm))
 
-set.seed(429) 
+set.seed(100) 
 wordcloud(names(mfreq),mfreq,
           min.freq=0,
           scale=c(4,0.5),

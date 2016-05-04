@@ -73,7 +73,8 @@ load("word_anomal_day.Rda")
 
 Sankey diagram of anomaly day is shown below. In this Sankey diagram, we can see the relationship between complaint type and agencies,  and the relationship between agencies and boroughs. 
 
-```{r results='asis', tidy=TRUE, echo=FALSE}
+<p style="text-align: left; font-size:20px; font-weight:bold;">Sankey diagram between complaints, agencies, and boroughs at anomaly day</p>
+```{r results='asis', tidy=TRUE, echo=FALSE, fig.align='center'}
 plot(data_jan_08_output[[1]])
 ```
 
@@ -81,7 +82,8 @@ At the diagram above, there are lots of complaints directed to HPD(Housing Prese
 
 Another sankey diagram of anomaly day is shown as well. In this Sankey diagram, we can see the relationship between agencies and boroughs, and the relationship between boroughs and agencies. 
 
-```{r results='asis', tidy=TRUE, echo=FALSE}
+<p style="text-align: left; font-size:20px; font-weight:bold;">Sankey diagram between agencies, boroughs, and complaints at anomaly day</p>
+```{r results='asis', tidy=TRUE, echo=FALSE, fig.align='center'}
 plot(data_jan_08_output[[2]])
 ```
 
@@ -89,6 +91,7 @@ At the diagram above, we can see the direct relationship between borough and com
 
 Sankey diagram of one year is shown below. In this Sankey diagram, we can see the relationship between complaint type and agencies, and the relationship between agencies and boroughs. Here, we picked up top 3 agencies that had largest numbers of complaints at the nomaly day(Jan/8/2015) to compare the result with yearly data and anomaly data. 
 
+<p style="text-align: left; font-size:20px; font-weight:bold;">Sankey diagram between complaints, agencies, and boroughs at 2015</p>
 ```{r results='asis', tidy=TRUE, echo=FALSE}
 plot(data_2015_2016_TOP3_output[[1]])
 ```
@@ -100,7 +103,7 @@ AS we seen at examples of sankey diagram, HPD had the most complaints. Then, we 
 
 Here is the description information of complains directed to HPD at the anomaly day (Jan/8/2015).
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, fig.width = 3, fig.height = 3, fig.align='center'}
 dtm = JAN_08_2015_mining_HPD[[1]]
 mfreq = colSums(as.matrix(dtm))
 
