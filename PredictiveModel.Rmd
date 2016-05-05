@@ -10,6 +10,10 @@ library(dplyr)
 library(ggplot2)
 library(knitr)
 library(zoo)
+library(ggplot2)
+library(scales)
+library(zoo)
+
 #install.packages("devtools")
 #devtools::install_github("twitter/AnomalyDetection")
 
@@ -23,60 +27,11 @@ df = readRDS("full_filtered2.rds")
 df$Created.Date = as.character(df$Created.Date)
 ```
 
-```{r}
-colnames(df) = c("Date","Complaint.Type")
-complaint_list = unique(df$Complaint.Type)
-df$Date = as.Date(as.character(df$Date),format ="%m/%d/%Y")
-df$Date = as.POSIXct(df$Date)
-df$Day = strftime(df$Date, "%d")
-df$Month = strftime(df$Date, "%m")
-df$Year = strftime(df$Date, "%Y")
-df$cdate = paste(df$Day,df$Month,df$Year)
-df2 = df%>%group_by(cdate)%>%summarise(count = n())
-
-df2 = df%>%group_by(Day,Month,Year)%>%summarise(count = n())
-
-#write.csv(df2,"Day_Month_Year_Count.csv")
-```
-
-
-```{r}
-df3 = data.frame(1:nrow(df2))
-colnames(df3) = "index"
-df3$count = df2$count
-rmean = data.frame(rollmean(df3,300, fill = FALSE))
-rmean = rmean[!(rmean$index==0),] 
-
-rsd = rollapply(df3, width = 3, FUN = sd, na.pad = TRUE)
-
-rollapply(1:100, width = 3, FUN = sd, na.pad = TRUE)
-plot(df3)
-
-ggplot() + 
-  geom_line(data = df3, aes(x = index, y = count, color = "red")) +
-  geom_line(data = rmean, aes(x = index, y = count, color = "blue")) +
-  ggtitle("Rolling Average")
-
-lm.fit=lm(count ~ index, data = df3 )
-summary(lm.fit)
-plot(lm.fit)
-```
-
-
-```{r}
-#jj has time as the index
-
-ggplot(df3, aes(x=index, y=count)) +
-    geom_point(shape=1) +    # Use hollow circles
-  geom_smooth(method = "lm", formula = y ~ splines::bs(x, 3), se = TRUE)#+
-    #ylim(4500,5000)
-
-```
-
 
 ```{r}
 library(lubridate)
 library(zoo)
+library(forecast)
 
 df$Created.Date = mdy_hms(df$Created.Date)
 
@@ -93,44 +48,46 @@ df4 = data.frame(df3$date)
 df4$count = df3$count
 colnames(df4) = c("date", "count")
 
-myts <- ts(df4$count, start=c(year(min(df4$date)), month(min(df4$date))), end=c(year(max(df4$date)), month(max(df4$date))), frequency=12*length(unique(df3$year))) 
 
-library(ggplot2)
-library(scales)
-library(zoo)
+#Limit df4 just to 2015
+df5 = filter(df4, year(df4$date) <2016)
+```
 
-autoplot(as.zoo(myts))+ 
-  scale_x_yearqtr()+
-  ggtitle("Time Series Plot")
+
+http://www.analyticsvidhya.com/blog/2015/12/complete-tutorial-time-series-modeling/
+```{r}
+library(tseries)
+
+myts <- ts(df5$count, start=c(year(min(df5$date)), month(min(df5$date)),day(min(df5$date))),end=c(year(max(df5$date)), month(max(df5$date)), day(max(df5$date))), frequency=365) 
 
 decomp = decompose(myts)
-plot(decomp$seasonal)
 plot(myts)
+plot(decomp$seasonal)
 plot(myts - decomp$seasonal)
 
-temp = decompose(myts - decomp$seasonal)
-#ggplot(myts, myts)
 
-fit <- stl(myts, s.window="period")
-plot(fit)
-
-monthplot(myts)
-library(forecast)
-
-seasonplot(myts)
+#Check for  stationary
+a = adf.test(diff(log(myts)), alternative="stationary", k=0)
+Box.test(myts, lag = 20, type = "Ljung-Box")
+kpss.test(myts)
 
 
-# fit an ARIMA model of order P, D, Q
-fit <- arima(myts, order= c(365, 0, 0))
-#plot(fit)
-# predictive accuracy
-library(forecast)
+#Conclued that the data is Stationary
+Acf(myts)
+# This plot suggests a Moving Asverage of 2
+Pacf(myts)
+
+
+#Suggests AR(2) Due to the PACF Plot
+#http://www.statosphere.com.au/check-time-series-stationary-r/
+
+fit <- arima(log(myts), c(0, 0, 2),seasonal = list(order = c(0, 1, 1), period = 365.25))
 accuracy(fit)
-require(graphics)
-nobs(fit)
-tsdiag(fit)
+plot(forecast(fit, h = 10))
 
-predict(fit, 265)
 
+#decomp = decompose(log(myts)
+#fit <- arima(log(myts),seasonal = decomp$seasonal,  order= c(3, 0, 0))
 
 ```
+
