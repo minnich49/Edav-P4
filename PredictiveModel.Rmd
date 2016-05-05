@@ -58,7 +58,7 @@ http://www.analyticsvidhya.com/blog/2015/12/complete-tutorial-time-series-modeli
 ```{r}
 library(tseries)
 
-myts <- ts(df5$count, start=c(year(min(df5$date)), month(min(df5$date)),day(min(df5$date))),end=c(year(max(df5$date)), month(max(df5$date)), day(max(df5$date))), frequency=365) 
+myts <- ts(df5$count, start=c(year(min(df5$date)),month(min(df5$date)),day(min(df5$date))),end=c(year(max(df5$date)), month(max(df5$date)), day(max(df5$date))), frequency=365) 
 
 decomp = decompose(myts)
 plot(myts)
@@ -67,7 +67,7 @@ plot(myts - decomp$seasonal)
 
 
 #Check for  stationary
-a = adf.test(diff(log(myts)), alternative="stationary", k=0)
+adf.test(diff(log(myts)), alternative="stationary", k=0)
 Box.test(myts, lag = 20, type = "Ljung-Box")
 kpss.test(myts)
 
@@ -81,9 +81,14 @@ Pacf(myts)
 #Suggests AR(2) Due to the PACF Plot
 #http://www.statosphere.com.au/check-time-series-stationary-r/
 
-fit <- arima(log(myts), c(0, 0, 2),seasonal = list(order = c(0, 1, 1), period = 365.25))
+fit <- arima(log(myts), c(0, 0, 2), period = 365.25)
 accuracy(fit)
 plot(forecast(fit, h = 10))
+
+
+x <- ts(myts, frequency=365)
+fit <- tbats(x)
+plot(forecast(fit))
 
 
 #decomp = decompose(log(myts)
