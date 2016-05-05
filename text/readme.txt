@@ -1,3 +1,6 @@
+#### DATA (presidents' speeches)
+https://drive.google.com/drive/u/3/folders/0B4tbdeCwIm93RUpWRzNpaXZ0bHc
+
 #### PROBLEM STATEMENT
 The project 4 is for Text Data Analysis and Visualization. As I mentioned in the class that I consider this as a smaller project than your project 2 and 3, and it is comparable to your project 1. 
 
