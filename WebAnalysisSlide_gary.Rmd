@@ -1,0 +1,118 @@
+<!--
+Required copyright information for w3c_slidy:
+
+   Copyright (c) 2005-2013 W3C (MIT, ERCIM, Keio), All Rights Reserved.
+   W3C liability, trademark, document use and software licensing
+   rules apply, see:
+
+   http://www.w3.org/Consortium/Legal/copyright-documents
+   http://www.w3.org/Consortium/Legal/copyright-software
+
+   Defines single name "w3c_slidy" in global namespace
+   Adds event handlers without trampling on any others
+
+-->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="duration" content="5" />
+<meta name="font-size-adjustment" content="-2" />
+<link rel="stylesheet" href="slidy.css" type="text/css" />
+<link rel="stylesheet" href="w3c-blue.css" type="text/css" />
+<script src="slidy.js" charset="utf-8" type="text/javascript">
+</script>
+</head>
+<body>
+<div class="background"></a></object></div>
+<div class="background slanty">
+
+</div>
+<div class="slide cover title">
+
+<img src="Frozen2.jpg" alt="NYC Subzero"
+ class="cover" /><br clear="all" />
+<h1>NYC Chaos Day</h1>
+
+<h2>team name</h2><br />
+<br />
+<br />
+<br />
+<br /><em>Hit the space bar or swipe left for next slide</em></p>
+</div>
+
+
+
+<!--            Web analysis             -->
+<div class="slide">
+<br/>
+<center><font size="5" color ='#ffffff'> Web analysis </font></center>
+<br />
+<br />
+<br />
+
+<p style="text-align: left; font-size:22px;">In The News</p>
+
+March 8 2015 made the news. There were 4 times more articles about the cold weather in NYC than a usual day
+```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.height = 3, fig.align='center'}
+coldnews <- read.csv('Gary -ggs2121/newscold3.csv', header = TRUE)
+coldnews <- coldnews[-1]
+
+if (!require("ggplot2")) {
+  install.packages("ggplot2")
+}
+library("ggplot2")
+ggplot(coldnews, aes(date,y = number.of.articles)) + geom_bar(stat = "identity", fill="#56B4E9")
+```
+
+Example of news linked to complaints
+
+  <span style="float:left;width: 50%;">
+  <IMG SRC="Gary -ggs2121/dead.png" float = "left" ALT="image">
+  </span>
+  <span style="float:right;width: 50%;">
+  <IMG SRC="Gary -ggs2121/nasa.png" float = "left" ALT="image">
+  </span>
+<br />
+&nbsp;
+&nbsp;
+  <p><img src="Gary -ggs2121/spacer.gif" alt=" " width="1" height="100" style="margin-right: 5px; margin-left: 5px;" />
+<p style="text-align: left; font-size:22px;">On Social Media</p>
+<p style="text-align: left;">On twitter, we noticed a number of user that complaint about cold weather. Regular citizen may complaint on 311 and on the internet at the same time.</p>
+Example of tweets linked to complaints
+
+  <span style="float:left;width: 50%;">
+  <IMG SRC="Gary -ggs2121/tweet.png" float = "left" ALT="image">
+  </span>
+  <span style="float:right;width: 50%;">
+  <IMG SRC="Gary -ggs2121/trump.jpeg" float = "left" ALT="image">
+  </span>
+<br />
+  <span style="float:center;width: 100%;">
+       <br />    
+  </span>
+  &nbsp;
+  &nbsp;
+  
+  <p><img src="Gary -ggs2121/spacer.gif" alt=" " width="1" height="100" style="margin-right: 5px; margin-left: 5px;" />
+<p style="text-align: left; font-size:22px;">On Google</p>
+So journalists and Internet users talk about this chaotic day but to see if it has a real impact on 311, we also analyzed google search through the google trend tool. We noticed a clear peak 
+
+<span style="float:center;width: 100%;">
+  <IMG SRC="Gary -ggs2121/gtrend.png" float = "left" ALT="image">
+  </span>
+</div>
+
+<!--            Web analysis             -->
+<div class="slide">
+<br/>
+<center><font size="5" color ='#ffffff'> Web analysis </font></center>
+<br />
+<br />
+<br />
+<span style="float:center;width: 100%;">
+  <IMG SRC="Gary -ggs2121/slide1.jpg" float = "left" ALT="image">
+  </span>
+</div>
