@@ -1,0 +1,74 @@
+---
+title: ''
+author: "Shuni Fang"
+date: "7 May 2016"
+output: html_document
+---
+
+Complaint Types and Descriptors Analysis
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+library(RColorBrewer)
+library(plotly)
+library(dplyr)
+```
+
+To analyze the complaints of the week surrounding January 8 2015, we pick the period of 01/05/2015 - 01/11/2015 and plot of the counts of the top five complaints of the week. We can see that complaints of Heat/Hot Water is more than 10 time of the second most type of complaints, which is expected because it is one of the coldest day of the year. we can see that the second most is Blocked Driveway and the third is plumbing, which makes sense given the weather condition.
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+
+load("sum_complaint.Rda")
+
+colors1 = brewer.pal(5,"RdYlGn")
+
+c_sum <- plot_ly(
+  data=complaint_summary,
+  x = n,
+  y = type,
+  name = "Complaint Type Count of Week of January 8, 2015",
+  type = "bar",
+  marker = list(color = colors1), orientation = 'h'
+) %>%
+  layout(margin = list(l=150))
+c_sum
+```
+
+Now we are interested in when these five types complaints are reported. With some preliminary statistics, we find that out of the 19833 complaints of Heat/Hot Water, 19832 of them are logged at 12AM, which means it is not likely to represent the real time of the complaints. Further, 96.6% of total unsanitary condition complaints and 98.6% of total plumbing complaints are logged at 12AM. As a result, we pick other time points of the day to do our analysis. Specifically, given that the complaints are reported at discreet time point with random time interval in between, we choose bar plot to show the count of the top five complaints of each hour we pick. Below is our plot showing the counts of complaints for 3AM, 6AM, 9AM, 12PM, 3PM, 6PM, 9PM. We can see that there are most Blocked Driveway complaints around 9AM, 3PM, and 9PM. And there are most Street Light complaints around 9AM and 3PM. 
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+# Bar plot of complaint types of selected hours
+load("byhour_complaint.Rda")
+
+plot_ly(data=Hourly[6:40,], x=hour, y=count, color=type, type='bar')
+```
+
+Next, we look at the desciptors of the complaints of the week surrounding January 8 2015. Similarly, we pick the period of 01/05/2015 - 01/11/2015 and plot of the counts of the top five descriptors of the week. As expected, the top descriptors are Entire Building and Apartment Only, which are associated with Heat/Hot Water complaints. The third most is Street Light Out, which is associated with complaints of Street Light Condition.
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+#Plot total number of each descriptor
+
+load("desc_sum.Rda")
+
+colors2 = brewer.pal(5,"RdYlBu")
+
+d_sum <- plot_ly(
+  data=desc_summary,
+  x = n,
+  y = descriptor,
+  name = "Descriptor Type Count of Week of January 8, 2015",
+  type = "bar",
+  marker = list(color = colors2), orientation = 'h'
+) %>%
+  layout(margin = list(l=150))
+d_sum
+```
+
+Similar to how we plot the counts of complaints throughout the day, we plot the counts of descriptors for 3AM, 6AM, 9AM, 12PM, 3PM, 6PM, 9PM using reactive bar charts. We can see that there are most descriptors about no access at 9AM and the amount of descriptors about no access is quite stable from 12PM to 9PM. Note that there are most descriptors about Pothole and Street Light Out at 3PM.
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+# Bar plot of descriptor of selected hours 
+
+load("byhour_descriptors.Rda")
+plot_ly(data=Hourly_2[6:40,], x=hour, y=count, color=type, type='bar')
+
+```
