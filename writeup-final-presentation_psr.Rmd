@@ -107,7 +107,7 @@ in terms of 311 complains</font>
 <iframe src="https://patrick-rogan.shinyapps.io/shiny/" width="100%" height="800px" frameborder="0"></iframe>
 <br />
 <br />
-<p>We see that the complaint categories have different distributions throughout New York city. For example, heat and hot water complaints appear to be clustered around the northern edge of Manhattan, in the lower Bronx and around the center of Brooklyn. However, other categories such as unsanitary condition appear to be uniformly distributed throughout the city. </p>
+<p>We see that the complaint categories have different distributions throughout New York City. For example, heat and hot water complaints appear to be clustered around the northern edge of Manhattan, in the lower Bronx and around the center of Brooklyn. However, other categories such as unsanitary condition appear to be uniformly distributed throughout the city. </p>
 </div>
 
 <!--            Car Collisions             -->
@@ -145,7 +145,7 @@ in terms of 311 complains</font>
 <br/>
 <br/>
 <br/>
-The 311 Service Requests contain many subfields including agencies and boroughs. Here we focus on relationship between agencies, boroughs, and complaints. We use Saneky diagrams to show the relationships between these variables. To put January 8th in perspective, we compare both the anomaly day and the complaints from an entire year. 
+The 311 Service Requests contain many subfields including agency and borough. Here we focus on relationship between agencies, boroughs, and complaints. We use Saneky diagrams to show the relationships between these variables. To put January 8th in perspective, we compare both the anomaly day and the complaints from an entire year. 
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
 
@@ -190,9 +190,10 @@ Another Sankey diagram of anomaly day is shown below. In this diagram, we can se
 plot(data_jan_08_output[[2]])
 ```
 </center>
+<br />
 In the diagram above, we can see the direct relationship between borough and complaint type. We can see that complaints of HEAT/HOT WATER are most prevalent in Brooklyn. From this result, we can also assume that some incidents related to water happened at the anomaly day. 
 
-Sankey diagram of one year is shown below. In this Sankey diagram, we can see the relationship between complaint type and agencies, and the relationship between agencies and boroughs. Here, we picked up top 3 agencies that had largest numbers of complaints at the nomaly day(Jan/8/2015) to compare the result with yearly data and anomaly data. 
+A Sankey diagram for a full year of complaints is shown below. In this diagram, we see the relationship between complaint type and agencies, and the relationship between agencies and boroughs. Here, we picked the top three agencies that had largest numbers of complaints on the anomaly day to compare the yearly data and anomaly data. 
 
 <p style="text-align: left; font-size:20px; font-weight:bold;">Sankey diagram between complaints, agencies, and boroughs at 2015</p>
 <center>
@@ -200,10 +201,10 @@ Sankey diagram of one year is shown below. In this Sankey diagram, we can see th
 plot(data_2015_2016_TOP3_output[[1]])
 ```
 </center>
+<br />
+In the diagram above we show the number of complaints directed to HPD, DOT or NYPD during 2015 and 2016. As we can see above, complaints of HEATING are the largest, however, complaints of HEAT/HOT WATER that was the largest numbers of complaints at anomaly day is not the largest in total. Hence, we can say that at the anomaly day, the numbers of complaints of HEAT/HOT WATER was very high compared with annual data. In addition, the numbers of complaints directed to HPD in Brooklyn was the largest (1076902), and it may be possible that houses or buildings at Brooklyn may have some issue related to water or heating.
 
-At the diagram above, numbers of complaints directed to HPD, DOT or NYPD during 2015 and 2016 can be seen. As we can see above, complaints of HEATING are the largest, however, complaints of HEAT/HOT WATER that was the largest numbers of complaints at anomaly day is not the largest number. Hence, we can say that at the anomaly day, the numbers of complaints of HEAT/HOT WATER was very high compared with anual data. In addition, the numbers of complaints directed to HPD at Brooklyn was the largest (1076902), and it may be possible that houses or buildings at Brooklyn may have some issue related to water or heating.
-
-AS we seen at examples of sankey diagram, HPD had the most complaints. Then, we will look at descriptions written in complaints. 
+As shown above, HPD had the most complaints. We then look at the descriptions written in these complaints. 
 
 Here is the description information of complains directed to HPD at the anomaly day (Jan/8/2015).
 
@@ -232,11 +233,12 @@ As we can see, words that are related to housing such as 'building' and 'apartme
 <br />
 <br />
 <br />
-The top complaints happended on Jan 2015 mostly went into two agencies: HPD and DOT. We'd like to summarize their efficiecny of closing the top complaints that they are in charge of over the month. <br />
+The majority of complaints in Jan 2015 went to two agencies: HPD and DOT. We'd like to summarize the efficiency of these agencies in closing complaints assigned to them over an extended time period. <br />
 
-Especially, we want to look at the window between Jan 1st and Jan 15th, which is a week before/after the chaos day Jan 8th. And we will focus on the Manhattan borough since most of us lived in this neighborhood. 
+Specifically, we want to look at the window between Jan 1st and Jan 15th, which is a week before/after the chaos day Jan 8th. Furthermore, we will focus on the Manhattan borough as it is where the majority of the report authors are located.
 <br />
-We are curious if there is any pattern within the agency. For example, whether HPD's response time to one type of complaint is affected by the other complaints? How's their efficiecny in closing complaints that were created on the chaos day compared to that on the other days? 
+
+We are curious if there is any pattern within agencies. For example, whether HPD's response time to one type of complaint is affected by the other complaints? How was their efficiency in closing complaints that were created on the chaos day compared to other days? 
 <br />
 <br />
 
@@ -256,9 +258,7 @@ plot(DOT_corr, main="DOT response time correlation")
 ```
 </center>
 <br />
-<br />
-<br />
-&nbsp;&nbsp;&nbsp;&nbsp; The pair correlations between types of complaints are very random for each agency.Then we move on to visualize the volumn of response time by complaint categories for two agencies.
+<p>The pair correlations between types of complaints are very random for each agency. We then move on to visualize the response time by complaint categories for two agencies. </p>
 <br />
 <br />
 <br />
@@ -272,9 +272,9 @@ plot_ly(data = HPD_manhattan[1:75,], x = date, y = response, type='bar',color =c
 ```
 </center>
 
-HPD is relatively efficient in fixing the Heat/Hot Water complaints, which is necessary because it's more urgent compared to other complaints during the winter days. 
+HPD is relatively efficient in fixing the Heat/Hot Water complaints, which is necessary because these are more urgent when compared to other complaints during the winter days. <br />
 
-This is also the case for complaints created on Jan 8th. If hover over Jan 8th, you will see that HPD took longer time closing Plumbing, Door/Window, Unsanitary Condition, Paint/Plaster issues than closing Heat/Hot Water complaint. 
+<p>This is also the case for complaints created on Jan 8th. If the reader hovers over Jan 8th, they will see that HPD took longer time closing Plumbing, Door/Window, Unsanitary Condition, Paint/Plaster issues than closing Heat/Hot Water complaints. </p>
 <br />
 <br />
 <center>
@@ -284,11 +284,10 @@ plot_ly(data = DOT_manhattan[1:75,], x = date, y = response, type='bar', color =
 ````
 </center>
 
-DOT's response efficiency differs among types of complaints as well, while the contrast is more obvious. Highway Condition and Traffic Signal Condition are definitely more urgent than other cases and so they might be the priority things for DOT to work on. 
-<br />
+DOT's response efficiency differs among types of complaints as well, here the contrast between response times is more obvious. Highway Condition and Traffic Signal Condition are more urgent than other cases and as such the DOT may work harder to resolve these issues.
 <br />
 
-From the visualization, we hardly found a pattern that could summarize the agency's response time to different complaints over the week before/after Jan 8th, which is understandable as the urgency of complaints and other extragenous factors may affect the agency's efficiency.
+From the visualization, we do not find pattern that could summarize the agency's response time to different complaints over the week before/after Jan 8th. This is understandable as the urgency of complaints and other exogenous factors may affect the agency's efficiency. 
 <br />
 <br />
 <br />
