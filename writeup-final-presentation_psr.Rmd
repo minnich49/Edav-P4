@@ -83,10 +83,23 @@ in terms of 311 complains</font>
 </div>
 </div>
 
+
+<!--            Identification             -->
+<div class="slide">
+<br/>
+<center><font size="6" color ='#ffffff'> Identification of “Chaos Day”
+ </font></center>
+<br />
+<br />
+<br />
+</div>
+
+
+
 <!--            Exploration             -->
 <div class="slide">
 <br/>
-<center><font size="5" color ='#ffffff'> Exploring Complaints </font></center>
+<center><font size="6" color ='#ffffff'> Exploring Complaints </font></center>
 <br />
 <br />
 <style>
@@ -94,13 +107,18 @@ in terms of 311 complains</font>
      margin-bottom: 0.35cm;
   }
 </style>
+<p>We continue our investigation by plotting the top ten 311 complaint categories for January 8th according to census tracts as shown below. </p>
+<br />
 <iframe src="https://patrick-rogan.shinyapps.io/shiny/" width="100%" height="800px" frameborder="0"></iframe>
+<br />
+<br />
+<p>We see that the complaint categories have different distributions throughout New York city. For example, heat and hot water complaints appear to be clustered around the northern edge of Manhattan, in the lower Bronx and around the center of Brooklyn. However, other categories such as unsanitary condition appear to be uniformly distributed throughout the city. </p>
 </div>
 
 <!--            Car Collisions             -->
 <div class="slide">
 <br/>
-<center><font size="5" color ='#ffffff'> Collisions Placeholder </font></center>
+<center><font size="6" color ='#ffffff'> Collisions Placeholder </font></center>
 <br />
 <br />
 <br />
@@ -111,7 +129,7 @@ in terms of 311 complains</font>
 <!--            Historical Car Collisions             -->
 <div class="slide">
 <br/>
-<center><font size="5" color ='#ffffff'> Comparison to historcal collisions in NYC  </font></center>
+<center><font size="6" color ='#ffffff'> Comparison to historcal collisions in NYC  </font></center>
 <br />
 <br />
 <br />
@@ -128,7 +146,7 @@ in terms of 311 complains</font>
 <!--            Agency             -->
 <div class="slide">
 <br/>
-<center><font size="5" color ='#ffffff'> Relationship between agencies, complaints, and boroughs </font></center>
+<center><font size="6" color ='#ffffff'> Relationship between agencies, complaints, and boroughs </font></center>
 <br/>
 <br/>
 <br/>
@@ -215,7 +233,7 @@ As we can see above, words that are related to housing such as building, apartme
 <!--            Agency Response Time Analysis             -->
 <div class="slide">
 <br/>
-<center><font size="5" color ='#ffffff'> Agency Response Time Analysis  </font></center>
+<center><font size="6" color ='#ffffff'> Agency Response Time Analysis  </font></center>
 <br />
 <br />
 <br />
@@ -285,10 +303,14 @@ From the visualization, we hardly found a pattern that could summarize the agenc
 
 <div class="slide">
 <br/>
-<center><font size="5" color ='#ffffff'> References </font></center>
+<center><font size="6" color ='#ffffff'> References </font></center>
 <br />
 <br />
 <br />
-Example Reference. https://www.e <br>
+<p>
+<b>311 | City of New York </b><br>
+http://www1.nyc.gov/311/<br>
+</p>
+<br />
 </div>
 
