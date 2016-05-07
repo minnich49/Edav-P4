@@ -102,13 +102,8 @@ in terms of 311 complains</font>
 <center><font size="6" color ='#ffffff'> Exploring Complaints </font></center>
 <br />
 <br />
-<style>
-  .small-skip {
-     margin-bottom: 0.35cm;
-  }
-</style>
-<p>We continue our investigation by plotting the top ten 311 complaint categories for January 8th according to census tracts as shown below. </p>
 <br />
+<p>We continue our investigation by plotting the top ten 311 complaint categories for January 8th according to census tracts as shown below. </p>
 <iframe src="https://patrick-rogan.shinyapps.io/shiny/" width="100%" height="800px" frameborder="0"></iframe>
 <br />
 <br />
@@ -146,11 +141,11 @@ in terms of 311 complains</font>
 <!--            Agency             -->
 <div class="slide">
 <br/>
-<center><font size="6" color ='#ffffff'> Relationship between agencies, complaints, and boroughs </font></center>
+<center><font size="6" color ='#ffffff'> Relationship Between Agencies, Complaints, and Boroughs </font></center>
 <br/>
 <br/>
 <br/>
-At 311 Service Requests, there are many information such as agencies and boroughs. Here, we will focus on relationship between agencies, boroughs, and complaints. Some methods exist to show relationship, and we will use Saneky diagram to show the relationship. To compare the result, we will focus on both anomaly day and overal information during one year. 
+The 311 Service Requests contain many subfields including agencies and boroughs. Here we focus on relationship between agencies, boroughs, and complaints. We use Saneky diagrams to show the relationships between these variables. To put January 8th in perspective, we compare both the anomaly day and the complaints from an entire year. 
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
 
@@ -176,7 +171,7 @@ load("sankey_2015_top3.Rda")
 load("word_anomal_day.Rda")
 
 ```
-Sankey diagram of anomaly day is shown below. In this Sankey diagram, we can see the relationship between complaint type and agencies,  and the relationship between agencies and boroughs. 
+A Sankey diagram of anomaly day is shown below. Here we see the relationship between complaint type and agencies, as well as the relationship between agencies and boroughs. 
 
 <p style="text-align: left; font-size:20px; font-weight:bold;">Sankey diagram between complaints, agencies, and boroughs at anomaly day</p>
 <center>
@@ -184,10 +179,10 @@ Sankey diagram of anomaly day is shown below. In this Sankey diagram, we can see
 plot(data_jan_08_output[[1]])
 ```
 </center>
+<br />
+In the above diagram, there are many complaints directed to HPD (Housing Preservation & Development) on January 8th. Among these, there are 5225 complaints classified as HEAT/HOT WATER which is the largest complaint category for this day. We also see other complaints such as plumbing or DOOR/WINDOW. Furthermore we observe the relationships between agencies and boroughs. For example, the numbers of complaints directed to HPD are the largest in Brooklyn. 
 
-At the diagram above, there are lots of complaints directed to HPD(Housing Preservation & Development) at anomaly day(Ja/08/2015). Among these complaints, the numbers of complaints of HEAT/HOT WATER are 5225, which is the largest numbers of complaints at the anomaly day. In addition, there are other complaints such as plumbing or DOOR/WINDOW. We also can see the relationship between agencies and boroughs. The numbers of complaints directed to HPD are the largest at Brooklyn. From this result, we can assume that some incidents related to water happened at Brooklyn. 
-
-Another sankey diagram of anomaly day is shown as well. In this Sankey diagram, we can see the relationship between agencies and boroughs, and the relationship between boroughs and agencies. 
+Another Sankey diagram of anomaly day is shown below. In this diagram, we can see the relationship between agencies and boroughs, and the relationship between boroughs and complaints.  
 
 <p style="text-align: left; font-size:20px; font-weight:bold;">Sankey diagram between agencies, boroughs, and complaints at anomaly day</p>
 <center>
@@ -195,7 +190,7 @@ Another sankey diagram of anomaly day is shown as well. In this Sankey diagram, 
 plot(data_jan_08_output[[2]])
 ```
 </center>
-At the diagram above, we can see the direct relationship between borough and complaint type which cannot be seen at the first diagram. We can see that complaints of HEAT/HOT WATER are the most at Brooklyn. From this result, we can also assume that some incidents related to water happened at the anomaly day. 
+In the diagram above, we can see the direct relationship between borough and complaint type. We can see that complaints of HEAT/HOT WATER are most prevalent in Brooklyn. From this result, we can also assume that some incidents related to water happened at the anomaly day. 
 
 Sankey diagram of one year is shown below. In this Sankey diagram, we can see the relationship between complaint type and agencies, and the relationship between agencies and boroughs. Here, we picked up top 3 agencies that had largest numbers of complaints at the nomaly day(Jan/8/2015) to compare the result with yearly data and anomaly data. 
 
@@ -225,7 +220,7 @@ wordcloud(names(mfreq),mfreq,
           random.order=FALSE)
 ```
 
-As we can see above, words that are related to housing such as building, apartment are picked up. From the previous analysis about complaint type, we know that there are lots of HEAT/HOT WATER complaints. From this wordcloud, we can assume that there would be lots of complaints related to building and apartment.
+As we can see, words that are related to housing such as 'building' and 'apartment' are prevalent. From the previous analysis about complaint type, we know that there are many HEAT/HOT WATER complaints. This wordcloud is consistent with the distribution of complaints for this day.
 
 </div>
 
