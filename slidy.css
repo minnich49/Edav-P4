@@ -7,6 +7,17 @@
    http://www.w3.org/Consortium/Legal/copyright-documents
    http://www.w3.org/Consortium/Legal/copyright-software
 */
+
+.container {
+    position: absolute;
+    top: 35%;
+    left: 5%;
+    right: 15%;
+}
+.far_right {
+    margin: 0;
+}
+
 body
 {
   margin: 0 0 0 0;
