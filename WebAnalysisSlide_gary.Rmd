@@ -57,7 +57,7 @@ Required copyright information for w3c_slidy:
 
 March 8 2015 made the news. There were 4 times more articles about the cold weather in NYC than a usual day
 ```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.height = 3, fig.align='center'}
-coldnews <- read.csv('Gary -ggs2121/newscold3.csv', header = TRUE)
+coldnews <- read.csv('Gary-ggs2121/newscold3.csv', header = TRUE)
 coldnews <- coldnews[-1]
 
 if (!require("ggplot2")) {
@@ -70,10 +70,10 @@ ggplot(coldnews, aes(date,y = number.of.articles)) + geom_bar(stat = "identity",
 Example of news linked to complaints
 
   <span style="float:left;width: 50%;">
-  <IMG SRC="Gary -ggs2121/dead.png" float = "left" ALT="image">
+  <IMG SRC="Gary-ggs2121/dead.png" float = "left" ALT="image">
   </span>
   <span style="float:right;width: 50%;">
-  <IMG SRC="Gary -ggs2121/nasa.png" float = "left" ALT="image">
+  <IMG SRC="Gary-ggs2121/nasa.png" float = "left" ALT="image">
   </span>
 <br />
 &nbsp;
@@ -113,6 +113,6 @@ So journalists and Internet users talk about this chaotic day but to see if it h
 <br />
 <br />
 <span style="float:center;width: 100%;">
-  <IMG SRC="Gary -ggs2121/slide1.jpg" float = "left" ALT="image">
+  <IMG SRC="Gary-ggs2121/Slide1.jpg" float = "left" ALT="image">
   </span>
 </div>
