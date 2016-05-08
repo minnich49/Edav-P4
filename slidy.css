@@ -370,3 +370,6 @@ div.initial_prompt { display: none; visibility: hidden }
   div.slide.first-slide { page-break-before: avoid }
 }
 
+
+li {font-size:90%} 
+

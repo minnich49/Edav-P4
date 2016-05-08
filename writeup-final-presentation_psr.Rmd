@@ -113,10 +113,16 @@ in terms of 311 complains</font>
 <!--            Car Collisions             -->
 <div class="slide">
 <br/>
-<center><font size="6" color ='#ffffff'> Collisions Placeholder </font></center>
+<center><font size="6" color ='#ffffff'> NYC Car Collisions on Jan 08, 2015 </font></center>
 <br />
 <br />
 <br />
+  <li>What made today so bad for NYC? Was it a bad day for traffic?</li>
+  <li>The time lapse plot (link below) will show you the number collisions that occured on Jan 08, 2015. The collisions will appear at the time they happened. The colors are related to the type of vehicle that was involved in the collision.</li>
+</ul>
+
+<center><IMG SRC="figs/Collisions.png" float = "center" ALT="image" height="550" width="800"></center>
+<a href="http://bl.ocks.org/minnich49/raw/fbeb70700c7c870ea016a28c4918f322/">Link to D3 NYC Car Collisions</a>
 
 </div>
 
@@ -124,18 +130,22 @@ in terms of 311 complains</font>
 <!--            Historical Car Collisions             -->
 <div class="slide">
 <br/>
-<center><font size="6" color ='#ffffff'> Comparison to historcal collisions in NYC  </font></center>
+<center><font size="6" color ='#ffffff'> Comparison to Historcal Collisions in NYC  </font></center>
 <br />
 <br />
 <br />
+<div>
+  <IMG SRC="figs/Car_Histogram.png" float = "left" ALT="image"  height="400" width="400">
+  <IMG SRC="figs/Car_Violin_Bur.png" float = "right" ALT="image"  height="400" width="600">
+</div>
 
-  <span style="float:left;width: 35%;">
-  <IMG SRC="figs/Car_Histogram.png" float = "left" ALT="image">
-  </span>
-  
-  <span style="float:right;width: 50%;">
-  <IMG SRC="figs/Car_Violin_Bur.png" float = "right" ALT="image">
-  </span>
+  <li>We can see from the red line in the upper left plot, that January 8, 2015 was a pretty typical day in terms of car collisions at 505 total.</li>
+  <li>There was even a day that had over 900 collisions, which was during a major winter storm.</li>
+  <li>To insure that this horrible day did not just affect a single burrow, the plot on the left shows the historical distributions for each Borough, where the balck dot indicates January 8, 2015</li>
+  <li>Still nothing abormal about this day</li>
+
+</ul>
+
 </div>
 
 <!--            Agency             -->
@@ -293,6 +303,112 @@ From the visualization, we do not find pattern that could summarize the agency's
 <br />
 <br />
 
+</div>
+<!-- ############################# -->
+
+<!--            Prediction Model Approach     -->
+<div class="slide">
+<br/>
+<center><font size="6" color ='#ffffff'> Prediction Model - Approach </font></center>
+<br />
+<br />
+<br />
+  <li>Time series analysis was unable to accuractly predict number of counts per day due to volatile changes from day to day.</li>
+  <li>Turned to Random Forest Regression in order to account for highly non-linear data. While it will be shown this model has difficulties detcting anomolies, we will see that there is still a large benefit for the 311 team in knowing what their next day will be, in order to properly staff for the incoming complaints.</li>
+  <li>Aggregated all of the complaints into daily counts and used the previous 4 days of information to predict the Count of that day(shown below as Day_Lag_1 to Day_Lag_4).</li>
+  <li>The initial features are the previous 4 days. Count is what is attempting to be predicted.</li>
+</ul>
+
+<center><IMG SRC="figs/explanation.jpg" float = "center" ALT="image" height="600" width="800"></center>
+
+
+</div>
+<!--            Prediction Model Approach End    -->
+
+<!--            Prediction Importance     -->
+<div class="slide">
+<br />
+
+<center><font size="6" color ='#ffffff'> Prediction Model - Importance Factors </font></center>
+<br />
+<br />
+<br />
+  <li>Model 1: The upper left plot was the initial model that only included the Counts from Daily Lags</li>
+  <li>Model 2: The upper right plot was the second model that added Weather (Minimum and Maximum Temp) and Month to Model 1</li>
+  <li>Model 3: The lower left plot was the third model that added Change Between Lags, which is the difference between Day_Lag_1 and Day_Lag_2, Day_Lag_2 and Day_Lag_3 etc</li>
+  <li>Model 4: The lower right plot was the fourth model that added Weekday, which is a label for the 7 days of the week. Sunday is 1...Saturday is 7</li>
+  <li>We can see that the Change Between Lags and the Weekday had a large change on the order of imporatance for the Random Forest Regression.</li>
+  <li>From the importance plots below it can be determined that Saturday and Fridays have added a large contribution to the final model. Suprisingly, after adding the days the Minimum and Maximum Temper importance increased.</li>
+
+</ul>
+
+<center><IMG SRC="figs/Importance.png" float = "center" ALT="image" height="600" width="800"></center>
+
+</div>
+<!--            Prediction Model Importance End    -->
+
+
+
+<!--            Prediction RMSE     -->
+<div class="slide">
+<br/>
+<center><font size="6" color ='#ffffff'> Prediction Model - RMSE </font></center>
+<br />
+<br />
+<br />
+  <li>A single prediction was made based on all of the previous days within the dataset. For example, to predict January 1, 2004, all previous days were used as training to predict the next day. This was done for ~200 days, which can be seen in the plots below. </li>
+  <li>For each prediction (Count) there were 4 previous days and other features,depending on the model, to help with the predictions.</li>
+  <li>Root Mean Squared Error was calculated to commpare models</li>
+  <li>After initial testing with Random Forests the RMSE needed to improve on the more volatile days</li>
+  <li>Adding the Changes Between Lags and the Weekday had the greatest improvement on RMSE, therefore Model 4 was chosen (All previous features + Weekday)</li>
+</ul>
+
+
+<center><IMG SRC="figs/RMSE.png" float = "center" ALT="image" height="550" width="800"></center>
+
+</div>
+<!--            Prediction Model RMSE End    -->
+
+<!--            Prediction ModelTime Series and Conclusin/Improvements     -->
+<div class="slide">
+<br/>
+<center><font size="6" color ='#ffffff'> Prediction Model - Predictions </font></center>
+<br />
+<br />
+<br />
+  <li>We can see from the plots below that Model 4 does a good job of following the trends that are seen within daily complaints</li>
+  <li>The model has difficulties in predicting the extremely volatile days but still does a good job of holding the correect trend.</li>
+  <li>The memory of the model can sometimes hurt the performance, as inbetween 11/21/2015 and 12/01/2015, the predictive model consistently experiecnes a dip</li>
+  <li>So while the initial goal started out to predict anamolies, we found that most of the anamolies occured around the days after New Years Eve, when many 311 workers would come back to work on the backlog of complaints. We believe that this model helps the 311 team understand on a day to day basis on how many complaints they will have in their next day and can help adjust their staff accordingly.</li>
+</ul>
+
+  <span style="float:center;width: 20%;">
+    <center><IMG SRC="figs/Predictions.png" float = "center" ALT="image" height="600" width="800"></center>
+  </span>
+</div>
+<!--            Prediction Time Series and Conclusin/Improvements     -->
+
+
+<div class="slide">
+<br/>
+<center><font size="6" color ='#ffffff'> Conclusion </font></center>
+<br />
+<br />
+<br />
+<p>
+</p>
+<br />
+</div>
+
+<div class="slide">
+<br/>
+<center><font size="6" color ='#ffffff'> Team </font></center>
+<br />
+<br />
+<br />
+<p>
+</p>
+<br />
 </div>
 
 <div class="slide">

@@ -73,7 +73,10 @@ a = ggplot(agg2, aes(x=collisions)) + geom_histogram(binwidth = 10,fill=col)+
   xlab("Number of Collisions Per Day")+
   ylab("Number Days") +
   geom_vline(aes(xintercept =agg3$collisions),color = col2)+
-  annotate("text", x =agg3$collisions + 220,y = 85,label = "Car Collisions on Jan 08,2015", size = 3)
+  annotate("text", x =agg3$collisions + 220,y = 85,label = "Car Collisions on Jan 08,2015", size = 3)+
+  theme_light()+
+  theme(legend.position = "none") +
+  theme(legend.position = "none") + theme(plot.title = element_text(size = rel(0.8)))
 
 
 b = ggplot(agg, aes(x=Borough,y = collisions,color=Borough)) + 
@@ -87,7 +90,9 @@ b = ggplot(agg, aes(x=Borough,y = collisions,color=Borough)) +
     annotate("point",x = factor("STATEN ISLAND"), y = agg4$collisions[5])+
   xlab("Black Point indicates collisions on Jan 08,205") +
     theme(axis.title.x = element_text( size=6))+
-  ggtitle(paste("Number of Collisions per Day",title_text,sep = ": "))
+  ggtitle(paste("Number of Collisions per Day",title_text,sep = ": "))+
+  theme_light()+
+  theme(legend.position = "none") + theme(plot.title = element_text(size = rel(0.8)))
 b
 
 # library(grid)

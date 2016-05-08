@@ -33,19 +33,7 @@ df = readRDS("full_filtered2.rds")
 
 ```
 
-Parse Dates into columns
-```{r}
-#date_clean <- data.frame(do.call('rbind', strsplit(as.character(df$Created.Date),"\\s+")))
-#date_clean$X1 = as.Date(as.character(date_clean$X1),format ="%m/%d/%Y")
-#colnames(date_clean) = c("Date", "Time", "AM/PM")
-#df = cbind(df,date_clean)
 
-
-#date_clean <- data.frame(do.call('rbind', strsplit(as.character(df$Created.Date),"\\s+")))
-#month_clean <- data.frame(do.call('rbind', strsplit(as.character(Complaints_total$Date),"-")))
-
-
-```
 
 ```{r}
 #Will Produce overall anamolies for all types of complaints if they exist
@@ -86,14 +74,19 @@ anom_df$timestamp = as.POSIXct(anom_df$timestamp)
 df4 = filter(df3, Date < "2015-01-08"  & "2015-01-06" < Date)
 plot_anom = filter(anom_df, timestamp > as.POSIXct("2015-01-07")  & as.POSIXct("2015-01-08") >= timestamp)
 plot_anom2 = filter(plot_anom,Complaint != "HEAT/HOT WATER")
-ggplot(plot_anom2) +
-  geom_bar(aes(x=Complaint,y=anoms, fill = Complaint), stat="identity",colour = "Anamolies") +
+a = ggplot(plot_anom2) +
+  geom_bar(aes(x=Complaint,y=anoms, fill = Complaint,colour = "anoms"), stat="identity") +
+  theme(legend.position="none")+
   coord_flip() + 
   guides(fill=FALSE) +
   ylab("Number of Complaints") +
-  
-  ggtitle("Anomalies Detected on Jan 8th, 2015 ")
+  ggtitle("Anomalies Detected on Jan 8th, 2015 ")+theme_light()+
+  theme(legend.position = "none") 
 
+
+png("figs/BarChart-Anamolies.png",width = 6,height = 4,res = 300, units = "in")
+a
+dev.off()
 ```
 
 ```{r}
@@ -109,126 +102,69 @@ Complaint_Lookup = c("Animal Abuse", "Water Conservation", "OUTSIDE BUILDING", "
 plot_time = filter(df3,Complaint.Type %in% Complaint_Lookup )
 anom_df$timestamp = as.POSIXct(anom_df$timestamp)
 plot_anom = filter(anom_df, Complaint == Complaint_Lookup)
-ggplot(plot_time, aes(x=Date, y=count, colour = Complaint.Type )) +  
+b = ggplot(plot_time, aes(x=Date, y=count, colour = Complaint.Type )) +  
   geom_line() + 
   geom_point(data = plot_anom, aes(x = timestamp, y = anoms, colour = "Anamolies")) +
   ggtitle("Anamoly Detection for Multiple Complaints") + 
   ylab("Number of Complaints per Day") + 
   xlim(as.POSIXct("2014-01-01"),max(plot_time$Date))+
-  ylim(0,125)
+  ylim(0,125)+theme_light()+
+  theme(legend.position = "none") 
 
+png("figs/Anaom_Multiple.png",width = 6,height = 4,res = 300, units = "in")
+b
+dev.off()
+
+```
+
+```{r}
 Complaint_Lookup = c("HEAT/HOT WATER")
 plot_time = filter(df3,Complaint.Type %in% Complaint_Lookup )
 anom_df$timestamp = as.POSIXct(anom_df$timestamp)
 plot_anom = filter(anom_df, Complaint == Complaint_Lookup)
-ggplot(plot_time, aes(x=Date, y=count, colour = Complaint.Type ))+ theme(legend.position = "none") + 
+c = ggplot(plot_time, aes(x=Date, y=count, colour = Complaint.Type ))+ theme(legend.position = "none") + 
   geom_line() + 
   geom_point(data = plot_anom, aes(x = timestamp, y = anoms, colour = "red")) +
   ggtitle("Anamoly Detection for Heat and Hot Water") + 
   theme(legend.position = "none") +
-  ylab("Number of Complaints per Day") 
+  ylab("Number of Complaints per Day") +theme_light()+
+  theme(legend.position = "none") 
 
-ggplot(plot_time, aes(x=Date, y=count, colour = Complaint.Type ))+ theme(legend.position = "none") + 
-  geom_line() + 
-  geom_point(data = plot_anom, aes(x = timestamp, y = anoms, colour = "red")) +
-  ggtitle("Anamoly Detection for Heat and Hot Water") + 
-  theme(legend.position = "none") +
-  ylab("Number of Complaints per Day")
+png("figs/Heat_HotWater.png",width = 6,height = 4,res = 300, units = "in")
+c
+dev.off()
+
+```
 
 
 
+
+```{r}
 df2 = group_by(df,Date)
 df3_all = summarise(df2, count = n())
 
 
 res = AnomalyDetectionTs(df3_all, max_anoms=0.02, direction='both', plot=TRUE,piecewise_median_period_weeks = 3)
 
-ggplot(df3_all, aes(x=Date, y=count, color = "blue" ))+ theme(legend.position = "none") + 
+d = ggplot(df3_all, aes(x=Date, y=count, color = "blue" ))+ theme(legend.position = "none") + 
   geom_line() + 
   geom_point(data = res$anoms, aes(x = timestamp, y = anoms, colour = "red")) +
   ggtitle("Anamoly Detection for Complaint Dataset") + 
   theme(legend.position = "none") +
-  ylab("Number of Complaints per Day")
+  ylab("Number of Complaints per Day")+theme_light()+
+  theme(legend.position = "none") 
+
+png("figs/Complaints_EntireDataset.png",width = 6,height = 4,res = 300, units = "in")
+d
+dev.off()
 
 
-```
-
-
-```{r,results='asis',tidy=FALSE, echo=FALSE, fig.align='left'}
-bubble = group_by(anom_df,Complaint)
-bubble2 = summarise(bubble,sum(anoms))
-colnames(bubble2) = c("Complaint", "Count")
-bubble2$index = c(1:nrow(bubble2))
-ggplot(bubble2, aes(x=index, y=log(Count), size=(Count), label=Complaint),guide=FALSE)+
-    geom_point(aes(size = log(Count), colour = Count, alpha=.02)) 
-
-
-```
-
-
-```{r,results='asis',tidy=FALSE, echo=FALSE, fig.align='left'}
-bubble2$log = log(bubble2$Count)
-Bubble <- gvisBubbleChart(bubble2, idvar = "Complaint", xvar = "index", 
-                          yvar = "Count", 
-                          colorvar = "Count", sizevar = "Count", 
-                          options = list(colorAxis = "{colors: ['lightblue', 'blue']}", 
-                          vAxis = "{title:'Mean Income'}", hAxis = "{title:'First Entry'}", 
-                         width = 1000, height = 1000, bubble = "{textStyle:{color: 'none',fontName: 'Times-Roman', fontSize:9}}",           explorer = "{actions: ['dragToZoom', 'rightClickToReset'] }",
-                         title = "Mean Income Bubble Chart"))
-
-plot(Bubble)
-
-```
-
-```{r,results='asis',tidy=FALSE, echo=FALSE, fig.align='left'}
-bubble2$log = log(bubble2$Count)
-Bubble <- gvisBubbleChart(bubble2, idvar = "Complaint", xvar = "index", 
-                          yvar = "log", 
-                          colorvar = "log", sizevar = "log", 
-                          options = list(colorAxis = "{colors: ['lightblue', 'blue']}", 
-                          vAxis = "{title:'Mean Income'}", hAxis = "{title:'First Entry'}", 
-                         width = 1000, height = 1000, bubble = "{textStyle:{color: 'none',fontName: 'Times-Roman', fontSize:9}}",           explorer = "{actions: ['dragToZoom', 'rightClickToReset'] }",
-                         title = "Mean Income Bubble Chart"))
-
-plot(Bubble)
-
-```
-
-
-```{r}
-
-df2 = group_by(df,Date)
-df3 = summarise(df2, count = n())
-res = AnomalyDetectionTs(df3, max_anoms=0.02, direction='both', plot=TRUE,piecewise_median_period_weeks = 3)
-beg = as.Date("2016-01-04")
-end = as.Date("2016-01-05")
-
-res$plot+ 
-xlab("Date") +
-ylab("Number of Complaints per Day") + 
-ggtitle("2014-2015 Anomalies of Total Complaints")+
-  xlim(as.POSIXct("2014-01-01"),as.POSIXct("2015-12-31"))+
-  geom_point(aes(x = as.POSIXct("2016-01-05"), y= 11,000), color = "red")
-
-res$anoms[order(res$anoms$anoms),]
-
-ggplot(df3,aes(x = Date,y = count))+ 
-  geom_line() +
-  xlim(as.POSIXct("2013-01-20"),as.POSIXct("2013-01-24"))
-
-count=  0
-for(i in 1:nrow(df3)){
-  if(df3$count[i] == 9033){
-    count= count + 1
-  }
-}
-print(count)
 ```
 
 
 
 ```{r}
-df2 = group_by(df,Day,Month,Year)
+df2 = group_by(filter(df,Year == 2015 & Month == "01" & Day == "08"),Day,Month,Year)
 df3 = summarise(df2, count = n())
 df3$Date = paste(df3$Month,df3$Day,df3$Year,sep = "/")
 df3$Date = as.Date(as.character(df3$Date),format ="%m/%d/%Y")
@@ -240,71 +176,6 @@ end = as.Date("2016-01-05")
 res$plot
 
 res$anoms[order(res$anoms$anoms),]
-
-ggplot(df3,aes(x = Date,y = count))+ 
-  geom_line() +
-  xlim(as.POSIXct("2013-01-20"),as.POSIXct("2013-01-24"))
-
-```
-
-
-
-```{r}
-df2 = group_by(filter(df,Year == 2015 & Month == "01" & Day == "07"),Day,Month,Year)
-df3 = summarise(df2, count = n())
-df3$Date = paste(df3$Month,df3$Day,df3$Year,sep = "/")
-df3$Date = as.Date(as.character(df3$Date),format ="%m/%d/%Y")
-df3$Date = as.POSIXct(df3$Date)
-
-res = AnomalyDetectionTs(df3, max_anoms=0.02, direction='both', plot=TRUE,piecewise_median_period_weeks = 3)
-beg = as.Date("2016-01-04")
-end = as.Date("2016-01-05")
-res$plot
-
-res$anoms[order(res$anoms$anoms),]
-
-```
-
-```{r}
-test = filter(df, Date > as.POSIXct("2015-01-06") & Date < as.POSIXct("2015-01-08"))
-df2 = group_by(filter(test,Year == 2015 & Month == "01" & Day == "07"),Day,Month,Year)
-df3 = summarise(df2, count = n())
-
-test_df = read.csv("311_Jan_07_2015.csv")
-```
-
-
-```{r}
-df_test = read.csv("test.csv")
-#colnames(df_test) = c("Date","Complaint.Type")
-
-#df_test$Created.Date2 = as.Date(as.character(df_test$Created.Date),format ="%m/%d/%Y %I:%M:%S %p")
-df_test$Created.Date2 = as.POSIXct(df_test$Created.Date,format ="%m/%d/%Y %I:%M:%S %p")
-df_test$Day = strftime(df_test$Created.Date2, "%d")
-df_test$Month = strftime(df_test$Created.Date2, "%m")
-df_test$Year = strftime(df_test$Created.Date2, "%Y")
-
-df2 = group_by(df_test,Day,Month,Year)
-df3 = summarise(df2, count = n())
-
-df3$Date = paste(df3$Month,df3$Day,df3$Year,sep = "/")
-df3$Date = as.Date(as.character(df3$Date),format ="%m/%d/%Y")
-df3$Date = as.POSIXct(df3$Date)
-
-
-df4 = df3[,c("Date","count")]
-df4 = df4[complete.cases(df4),]
-df4[order(df4$count),]
-
-res = AnomalyDetectionTs(df4, max_anoms=0.05, direction='both', plot=TRUE,piecewise_median_period_weeks = 2)
-res
-res$anoms[order(res$anoms$anoms),]
-
-test = filter(df_test,Year == 2015 & Month == "01" & Day == "08")
-df2 = group_by(test,Day,Month,Year)
-df3 = summarise(df2, count = n())
-
-write.csv(test,"Jan_08_2015.csv")
 
 ```
 

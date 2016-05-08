@@ -60,39 +60,224 @@ library(tseries)
 
 myts <- ts(df5$count, start=c(year(min(df5$date)),month(min(df5$date)),day(min(df5$date))),end=c(year(max(df5$date)), month(max(df5$date)), day(max(df5$date))), frequency=365) 
 
+myts = msts(df5$count,seasonal.periods = c(7,12),start=c(year(min(df5$date)),month(min(df5$date)),day(min(df5$date))))
 decomp = decompose(myts)
 plot(myts)
+plot(diff(myts))
+plot(diff(log(myts)))
+
+dfl = diff(log(myts))
 plot(decomp$seasonal)
 plot(myts - decomp$seasonal)
 
 
 #Check for  stationary
-adf.test(diff(log(myts)), alternative="stationary", k=0)
+#The null-hypothesis for an ADF test is that the data are non-stationary. So large p-values are indicative of non-stationarity, and small p-values suggest stationarity. Using the usual 5% threshold, differencing is required if the p-value is greater than 0.05.
+adf.test(myts, alternative="stationary", k=0) #P value of 0.01 suggests that differencing is not required
+
+#Another popular unit root test is the Kwiatkowski-Phillips-Schmidt-Shin (KPSS) test. This reverses the hypotheses, so the null-hypothesis is that the data are stationary. In this case, small p-values (e.g., less than 0.05) suggest that differencing is required.
+kpss.test(myts) #Differencing is required with a p-value of 0.1
+
+
+
+
 Box.test(myts, lag = 20, type = "Ljung-Box")
-kpss.test(myts)
 
 
 #Conclued that the data is Stationary
 Acf(myts)
+
+
+Acf(dfl)
 # This plot suggests a Moving Asverage of 2
 Pacf(myts)
-
+Pacf(dfl)
 
 #Suggests AR(2) Due to the PACF Plot
 #http://www.statosphere.com.au/check-time-series-stationary-r/
 
-fit <- arima(log(myts), c(0, 0, 2), period = 365.25)
+fit <- arima(dfl, c(0, 0, 3))
 accuracy(fit)
-plot(forecast(fit, h = 10))
+plot(forecast(fit, h = 100))
 
 
-x <- ts(myts, frequency=365)
-fit <- tbats(x)
+fit <- tbats(dfl)
+
 plot(forecast(fit))
 
 
 #decomp = decompose(log(myts)
 #fit <- arima(log(myts),seasonal = decomp$seasonal,  order= c(3, 0, 0))
 
+
+eeadj <- seasadj(stl(myts, s.window="periodic"))
+plot(eeadj)
+
+plot(myts)
 ```
+
+```{r}
+getrmse <- function(x,h,...)
+{
+  train.end <- time(x)[length(x)-h]
+  test.start <- time(x)[length(x)-h+1]
+  train <- window(x,end=train.end)
+  test <- window(x,start=test.start)
+  fit <- Arima(train,...)
+  fc <- forecast(fit,h=h)
+  return(accuracy(fc,test)[2,"RMSE"])
+}
+
+
+```
+
+```{r}
+
+
+
+myts <- ts(df5$count, start=c(year(min(df5$date)),month(min(df5$date)),day(min(df5$date))),end=c(year(max(df5$date)), month(max(df5$date)), day(max(df5$date))), frequency=104) 
+tsdisplay(myts ,main="Seasonally differenced H02 scripts", xlab="Year")
+
+
+
+
+
+dfl = diff(log(myts),2)
+d = decompose(dfl)
+dfl = dfl - d$seasonal
+tsdisplay(dfl ,main="Seasonally differenced H02 scripts", xlab="Year")
+
+
+
+
+myts = msts(df5$count,seasonal.periods =
+              c(7,12),start=c(year(min(df5$date)),month(min(df5$date)),day(min(df5$date))))
+
+tsdisplay(myts ,main="Seasonally differenced H02 scripts", xlab="Year")
+
+dfl = diff(log(myts),2)
+
+fit3 <- Arima(dfl, order=c(0,1,3), seasonal=c(0,1,1))
+summary(fit3$aic)
+res <- residuals(fit3)
+tsdisplay(res)
+Box.test(res, lag=16, fitdf=4, type="Ljung")
+
+plot(forecast(fit3, h=100))
+
+```
+
+
+#Set up Model
+```{r}
+#df5 = filter(df4, year(df4$date) <=2015, year(df4$date) >2014)
+df5 = filter(df4, year(df4$date) <=2015)
+ndf5 = filter(df4, year(df4$date) >2015)
+
+#myts <- ts(df5$count, start=as.Date("2015-01-01"),end=as.Date("2015-12-31"),frequency=12) 
+myts <- msts(df5$count,seasonal.periods = c(12,365.25),start = 2010)
+decomp = decompose(myts)
+myts2 <- myts - decomp$seasonal
+
+nmyts <-  msts(ndf5$count,seasonal.periods = c(12,365.25),start = 2010)
+tsdisplay(myts)
+
+
+#Inspect for Seasonality
+tsdisplay(diff(myts,4))
+tsdisplay(diff(diff(myts,4)))
+
+tsdisplay(diff(log(myts),4))
+tsdisplay(diff(diff(log(myts),4)))
+dfl = diff(diff(log(myts),4))
+ndfl = diff(diff(log(nmyts),4))
+#Suggests PACF ONLY
+
+#Inspect for ACF, PCF
+
+#Adjust model for ACF, PCF
+
+#Look for Diff within model
+
+#Check for changing variance
+
+```
+
+
+```{r}
+#
+fit3 <- Arima(myts, order=c(0,1,3))
+fit3$aic
+
+results = data.frame()
+count = 1
+for(i in c(0:10)){
+  for(j in c(0:10)){
+      fit3 <- Arima(dfl, order=c(i,1,j))
+      results[count,1] = i
+      results[count,2] = j
+      results[count,3] = fit3$aic
+      count = count + 1
+  }
+}
+
+fit_Al <- Arima(dfl, order=c(5,0,10))
+fit_Hl <- HoltWinters(dfl, beta=TRUE, gamma=TRUE)
+fit_AAl <- auto.arima(dfl)
+
+Al = forecast(fit_Al,h = 3)
+Hl = forecast(fit_Hl,h = 3)
+AAl = forecast(fit_AAl,h = 3)
+
+fit_A <- Arima(myts, order=c(5,1,10))
+fit_H <- HoltWinters(myts, beta=TRUE, gamma=TRUE)
+fit_AA <- auto.arima(myts)
+fitets <- ets(myts)
+
+A = forecast(fit_A)
+H = forecast(fit_H)
+AA = forecast(fit_AA)
+
+plot(AA,xlim = c(2015.9,2016.1))
+
+plot(A,xlim = c(2016,2016.1))
+lines(seq(2016, 2016.09, by=0.01),ndf5$count[1:10])
+
+
+fit_Ad <- Arima(myts2, order=c(5,1,10),lambda=0)
+fit_Hd <- HoltWinters(myts2, beta=TRUE, gamma=TRUE)
+fit_AAd <- auto.arima(myts2)
+fitetsd <- ets(myts2)
+
+As = forecast(fit_Ad,3)
+Hs = forecast(fit_Hd,3)
+AAs = forecast(fit_AAd,3)
+
+```
+
+
+```{r}
+install.packages("quantmod")
+library(quantmod)
+
+RSI3<-RSI(Op(df4$count), n= 3)
+
+
+```
+
+```{r}
+library(lubridate)
+library(zoo)
+library(forecast)
+
+
+
+df = read.csv("Day_Month_Year_Count.csv")
+df$mdy = paste(as.character(df$Month), as.character(df$Day), as.character(df$Year),sep = "/")
+
+df$mdy = mdy(df$mdy)
+df$wd = wday(df$mdy)
+write.csv(df,"Day_Month_Year_Count_wd.csv")
+```
+
 
