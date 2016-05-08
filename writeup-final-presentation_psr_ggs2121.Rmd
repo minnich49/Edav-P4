@@ -70,12 +70,12 @@ Required copyright information for w3c_slidy:
 </ul>
 
 <br />
-
+<center>
 <div>
   <IMG SRC="figs/Complaints_EntireDataset.png" float = "center" ALT="image"  height="400" width="600">
   <IMG SRC="figs/Heat_HotWater.png" float = "center" ALT="image" height="400" width="600">
 </div>
-
+</center>
 
 <li>We also wanted to take a look at any anomalies that may have occurred on January 8th 2015. We used the anomaly detector to scan every complaint (aggregated per day) for the entire 311 data set.</li>
 <li>The detector was able to pick up 6 anomalies that were associated with the Chaos Day. They are displayed on the Bar Chart below.</li>
@@ -83,23 +83,27 @@ Required copyright information for w3c_slidy:
 </ul>
 <br />
 
+<center>
 <div>
   <IMG SRC="figs/Anaom_Multiple.png" float = "right" ALT="image"  height="400" width="600">
   <IMG SRC="figs/BarChart-Anamolies.png" float = "left" ALT="image"  height="400" width="600">
 </div>
+</center>
 </div>
 
 
 <!--            Web analysis             -->
 <div class="slide">
 <br/>
-<center><font size="5" color ='#ffffff'> Web analysis </font></center>
+<center><font size="5" color ='#ffffff'> Web Analysis </font></center>
 <br />
 <br />
 <br />
+<center>
 <span style="float:center;width: 100%;">
   <IMG SRC="Gary-ggs2121/Slide1.jpg" float = "left" ALT="image">
   </span>
+</center>  
 </div>
 
 
@@ -400,15 +404,15 @@ From the visualization, we do not find pattern that could summarize the agency's
 <!--            Transition             -->
 <div class="slide">
 <br/>
-<center><font size="6" color ='#ffffff'> Prediction futur "Chaos Day" </font></center>
+<center><font size="6" color ='#ffffff'> Prediction Future "Chaos Day" </font></center>
 <br />
 <br />
 <br />
-
+<center>
 <span style="float:center;width: 100%;">
-  <IMG SRC="Gary -ggs2121/prediction.jpg" float = "left" ALT="image">
+  <IMG SRC="Gary-ggs2121/Prediction.jpg" float = "left" ALT="image">
   </span>
-
+</center>  
 </div>
 <!--            Prediction Model Approach     -->
 <div class="slide">
@@ -422,7 +426,7 @@ From the visualization, we do not find pattern that could summarize the agency's
   <li>Aggregated all of the complaints into daily counts and used the previous 4 days of information to predict the Count of that day(shown below as Day_Lag_1 to Day_Lag_4).</li>
   <li>The initial features are the previous 4 days. Count is what is attempting to be predicted.</li>
 </ul>
-
+<br />
 <center><IMG SRC="figs/explanation.jpg" float = "center" ALT="image" height="600" width="800"></center>
 
 
@@ -506,7 +510,7 @@ The 311 databases is an amazing database to explore NYC through its best and wor
 <br />
 Detecting abnormal number of complaints helps us understand the city in a new way. We can connect complaints to the news to the weather to car collisions etc…
 
-However, abnormal number of complaints are complicated to handle by agencies. Their ability to predict the number of complaints is key to optimize their organisation, response time and efficiency. 
+However, abnormal number of complaints are complicated to handle by agencies. Their ability to predict the number of complaints is key to optimize their organization, response time and efficiency. 
 To help them in their mission, we developed a model that predicts the number of complaint based on the previous days.
 
 We wish to share this model with 311 agencies in order to help them manage their job in order to make NYC a better place.
