@@ -92,6 +92,33 @@ in terms of 311 complains</font>
 <br />
 <br />
 <br />
+
+   <li>Utilized Anomaly Detector to analyze anomalies that occurred within all different complaints, and total complaints.</li>
+   <li>In total the anomaly detector picks up 2914 Days that have Anomalies, 194 Unique Complaints, 599144 Number of Complaints</li>
+   <li>Within the graphs below you can see on the left plot, a time series of all of the complaints per day for the entire 311 data set. Anomalies are identified with blue points on the graph, which can be positive anomalies or negative anomalies.</li>
+<li>The package ignores seasonality, which was important due to complaints that only occur during specific times of the year,such as Heat and Hot Water below</li>
+<li>It was also suspicious that many of the anomalies occur after the following work day from New Years. We chose a day that had ample work time in between New Years Eve, and our new Chaos Day.</li>
+<li>January 8th, 2015 was chosen specifically because of its number of complaints, in 2015 was when 311 started to record 311 complaints throughout the day including hour and minute.</li>
+</ul>
+
+<br />
+
+<div>
+  <IMG SRC="figs/Complaints_EntireDataset.png" float = "center" ALT="image"  height="400" width="600">
+  <IMG SRC="figs/Heat_HotWater.png" float = "center" ALT="image" height="400" width="600">
+</div>
+
+
+<li>We also wanted to take a look at any anomalies that may have occurred on January 8th 2015. We used the anomaly detector to scan every complaint (aggregated per day) for the entire 311 data set.</li>
+<li>The detector was able to pick up 6 anomalies that were associated with the Chaos Day. They are displayed on the Bar Chart below.</li>
+<li>Displayed on the right side shows some of those anomalies (matched by color) throughout the 311 data set, with the anomalies indicated by the red points.</li>
+</ul>
+<br />
+
+<div>
+  <IMG SRC="figs/Anaom_Multiple.png" float = "right" ALT="image"  height="400" width="600">
+  <IMG SRC="figs/BarChart-Anamolies.png" float = "left" ALT="image"  height="400" width="600">
+</div>
 </div>
 
 
@@ -148,7 +175,7 @@ Example of tweets linked to complaints
   
   <p><img src="Gary-ggs2121/spacer.gif" alt=" " width="1" height="100" style="margin-right: 5px; margin-left: 5px;" />
 <p style="text-align: left; font-size:22px;">On Google</p>
-So journalists and Internet users talk about this chaotic day but to see if it has a real impact on 311, we also analyzed google search through the google trend tool. We noticed a clear peak 
+So journalists and Internet users talk about this chaotic day but to see if it has a real impact on 311, we also analyzed Google search through the Google trend tool. We noticed a clear peak 
 
 <span style="float:center;width: 100%;">
   <IMG SRC="Gary-ggs2121/gtrend.png" float = "left" ALT="image">
@@ -201,7 +228,7 @@ plot_ly(data=Hourly[6:40,], x=hour, y=count, color=type, type='bar')
 ```
 </center>
 
-<p>Next, we look at the desciptors of the complaints of the week surrounding January 8 2015. Similarly, we pick the period of 01/05/2015 - 01/11/2015 and plot of the counts of the top five descriptors of the week. As expected, the top descriptors are Entire Building and Apartment Only, which are associated with Heat/Hot Water complaints. The third most is Street Light Out, which is associated with complaints of Street Light Condition.</p>
+<p>Next, we look at the descriptors of the complaints of the week surrounding January 8 2015. Similarly, we pick the period of 01/05/2015 - 01/11/2015 and plot of the counts of the top five descriptors of the week. As expected, the top descriptors are Entire Building and Apartment Only, which are associated with Heat/Hot Water complaints. The third most is Street Light Out, which is associated with complaints of Street Light Condition.</p>
 
 <center>
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
@@ -263,13 +290,12 @@ plot_ly(data=Hourly_2[6:40,], x=hour, y=count, color=type, type='bar')
 <br />
 <br />
   <li>What made today so bad for NYC? Was it a bad day for traffic?</li>
-  <li>The time lapse plot (link below) will show you the number collisions that occured on Jan 08, 2015. The collisions will appear at the time they happened. The colors are related to the type of vehicle that was involved in the collision.</li>
+  <li>The time lapse plot (link below) will show you the number collisions that occurred on Jan 08, 2015. The collisions will appear at the time they happened. The colors are related to the type of vehicle that was involved in the collision.</li>
 </ul>
 
-<!-- <center><IMG SRC="figs/Collisions.png" float = "center" ALT="image" height="550" width="800"></center> 
+<center><IMG SRC="figs/Collisions.png" float = "center" ALT="image" height="550" width="800"></center> 
 <a href="http://bl.ocks.org/minnich49/raw/fbeb70700c7c870ea016a28c4918f322/">Link to D3 NYC Car Collisions</a>
--->
-<iframe src="http://bl.ocks.org/minnich49/raw/fbeb70700c7c870ea016a28c4918f322/" width="100%" height="800px" frameborder="0"></iframe>
+<!-- <iframe src="http://bl.ocks.org/minnich49/raw/fbeb70700c7c870ea016a28c4918f322/" marginwidth="0" marginheight="0" scrolling="no"></iframe> -->
 
 </div>
 
@@ -288,9 +314,9 @@ plot_ly(data=Hourly_2[6:40,], x=hour, y=count, color=type, type='bar')
 </div>
 </center>
   <li>We can see from the red line in the upper left plot, that January 8, 2015 was a pretty typical day in terms of car collisions at 505 total.</li>
-  <li>There was even a day that had over 900 collisions, which was during a major winter storm.</li>
-  <li>To insure that this horrible day did not just affect a single burrow, the plot on the left shows the historical distributions for each Borough, where the balck dot indicates January 8, 2015</li>
-  <li>Still nothing abormal about this day</li>
+  <li>There was even a day that had over 900 collisions, which was during a major winter storm and would have been a particularly bad day.</li>
+  <li>To insure that this horrible day did not just affect a single burrow, the plot on the left shows the historical distributions for each Borough, where the black dot indicates January 8, 2015</li>
+  <li>Still nothing abnormal about this day</li>
 
 </ul>
 
@@ -303,7 +329,7 @@ plot_ly(data=Hourly_2[6:40,], x=hour, y=count, color=type, type='bar')
 <br/>
 <br/>
 <br/>
-The 311 Service Requests contain many subfields including agency and borough. Here we focus on relationship between agencies, boroughs, and complaints. We use Saneky diagrams to show the relationships between these variables. To put January 8th in perspective, we compare both the anomaly day and the complaints from an entire year. 
+The 311 Service Requests contain many sub fields including agency and borough. Here we focus on relationship between agencies, boroughs, and complaints. We use Saneky diagrams to show the relationships between these variables. To put January 8th in perspective, we compare both the anomaly day and the complaints from an entire year. 
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
 
@@ -379,7 +405,7 @@ wordcloud(names(mfreq),mfreq,
           random.order=FALSE)
 ```
 
-As we can see, words that are related to housing such as 'building' and 'apartment' are prevalent. From the previous analysis about complaint type, we know that there are many HEAT/HOT WATER complaints. This wordcloud is consistent with the distribution of complaints for this day.
+As we can see, words that are related to housing such as 'building' and 'apartment' are prevalent. From the previous analysis about complaint type, we know that there are many HEAT/HOT WATER complaints. This word cloud is consistent with the distribution of complaints for this day.
 
 </div>
 
@@ -461,8 +487,8 @@ From the visualization, we do not find pattern that could summarize the agency's
 <br />
 <br />
 <br />
-  <li>Time series analysis was unable to accuractly predict number of counts per day due to volatile changes from day to day.</li>
-  <li>Turned to Random Forest Regression in order to account for highly non-linear data. While it will be shown this model has difficulties detcting anomolies, we will see that there is still a large benefit for the 311 team in knowing what their next day will be, in order to properly staff for the incoming complaints.</li>
+  <li>Time series analysis was unable to accurately predict number of counts per day due to volatile changes from day to day.</li>
+  <li>Turned to Random Forest Regression in order to account for highly non-linear data. While it will be shown this model has difficulties detecting anomalies, we will see that there is still a large benefit for the 311 team in knowing what their next day will be, in order to properly staff for the incoming complaints.</li>
   <li>Aggregated all of the complaints into daily counts and used the previous 4 days of information to predict the Count of that day(shown below as Day_Lag_1 to Day_Lag_4).</li>
   <li>The initial features are the previous 4 days. Count is what is attempting to be predicted.</li>
 </ul>
@@ -485,8 +511,8 @@ From the visualization, we do not find pattern that could summarize the agency's
   <li>Model 2: The upper right plot was the second model that added Weather (Minimum and Maximum Temp) and Month to Model 1</li>
   <li>Model 3: The lower left plot was the third model that added Change Between Lags, which is the difference between Day_Lag_1 and Day_Lag_2, Day_Lag_2 and Day_Lag_3 etc</li>
   <li>Model 4: The lower right plot was the fourth model that added Weekday, which is a label for the 7 days of the week. Sunday is 1...Saturday is 7</li>
-  <li>We can see that the Change Between Lags and the Weekday had a large change on the order of imporatance for the Random Forest Regression.</li>
-  <li>From the importance plots below it can be determined that Saturday and Fridays have added a large contribution to the final model. Suprisingly, after adding the days the Minimum and Maximum Temper importance increased.</li>
+  <li>We can see that the Change Between Lags and the Weekday had a large change on the order of importance for the Random Forest Regression.</li>
+  <li>From the importance plots below it can be determined that Saturday and Fridays have added a large contribution to the final model. Surprisingly, after adding the days the Minimum and Maximum Temper importance increased.</li>
 
 </ul>
 
@@ -504,9 +530,9 @@ From the visualization, we do not find pattern that could summarize the agency's
 <br />
 <br />
 <br />
-  <li>A single prediction was made based on all of the previous days within the dataset. For example, to predict January 1, 2004, all previous days were used as training to predict the next day. This was done for ~200 days, which can be seen in the plots below. </li>
+  <li>A single prediction was made based on all of the previous days within the data set. For example, to predict January 1, 2004, all previous days were used as training to predict the next day. This was done for ~200 days, which can be seen in the plots below. </li>
   <li>For each prediction (Count) there were 4 previous days and other features,depending on the model, to help with the predictions.</li>
-  <li>Root Mean Squared Error was calculated to commpare models</li>
+  <li>Root Mean Squared Error was calculated to compare models</li>
   <li>After initial testing with Random Forests the RMSE needed to improve on the more volatile days</li>
   <li>Adding the Changes Between Lags and the Weekday had the greatest improvement on RMSE, therefore Model 4 was chosen (All previous features + Weekday)</li>
 </ul>
@@ -525,9 +551,9 @@ From the visualization, we do not find pattern that could summarize the agency's
 <br />
 <br />
   <li>We can see from the plots below that Model 4 does a good job of following the trends that are seen within daily complaints</li>
-  <li>The model has difficulties in predicting the extremely volatile days but still does a good job of holding the correect trend.</li>
-  <li>The memory of the model can sometimes hurt the performance, as inbetween 11/21/2015 and 12/01/2015, the predictive model consistently experiecnes a dip</li>
-  <li>So while the initial goal started out to predict anamolies, we found that most of the anamolies occured around the days after New Years Eve, when many 311 workers would come back to work on the backlog of complaints. We believe that this model helps the 311 team understand on a day to day basis on how many complaints they will have in their next day and can help adjust their staff accordingly.</li>
+  <li>The model has difficulties in predicting the extremely volatile days but still does a good job of holding the correct trend.</li>
+  <li>The memory of the model can sometimes hurt the performance, as in between 11/21/2015 and 12/01/2015, the predictive model consistently experiences a dip</li>
+  <li>So while the initial goal started out to predict anomalies, we found that most of the anomalies occurred around the days after New Years Eve, when many 311 workers would come back to work on the backlog of complaints. We believe that this model helps the 311 team understand on a day to day basis on how many complaints they will have in their next day and can help adjust their staff accordingly.</li>
 </ul>
 
   <span style="float:center;width: 20%;">
