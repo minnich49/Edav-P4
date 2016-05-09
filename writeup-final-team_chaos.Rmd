@@ -31,7 +31,7 @@ Required copyright information for w3c_slidy:
 </div>
 <div class="slide cover title">
 <span style="float:left;width: 100%;">
-  <IMG SRC="https://github.com/gary159/Edav-P4/Gary\ -ggs2121/Front\ slide.png" float = "left" ALT="image">
+  <IMG SRC="Gary-ggs2121/Front_slide.png" float = "left" ALT="image">
   </span>
 <br />
 <br />
@@ -48,7 +48,7 @@ Required copyright information for w3c_slidy:
 <br />
 
 <span style="float:center;width: 100%;">
-  <IMG SRC="Gary -ggs2121/intro-sentence.png" float = "left" ALT="image">
+  <IMG SRC="Gary-ggs2121/intro-sentence.png" float = "left" ALT="image">
   </span>
 
 </div>
@@ -469,7 +469,7 @@ From the visualization, we do not find pattern that could summarize the agency's
   <li>For each prediction (Count) there were 4 previous days and other features, depending on the model, to help with the predictions.</li>
   <li>Root Mean Squared Error was calculated to compare models:</li>
   <center>
-  <IMG SRC="Gary -ggs2121/RMSE formula.png" float = "center" ALT="image" height="100" width="200">
+  <IMG SRC="Gary-ggs2121/RMSE.png" float = "center" ALT="image" height="100" width="200">
   </center>
   <li>After initial testing with Random Forests, we looked to improve the RMSE on the more volatile days.</li>
   <li>Adding the Changes Between Lags and the Weekday had the greatest improvement on RMSE, therefore Model 4 was chosen (All previous features + Weekday).</li>
@@ -508,7 +508,7 @@ From the visualization, we do not find pattern that could summarize the agency's
 <br />
 <br />
 The 311 databases provides an amazing source of information to explore NYC through its best and worst days.
-<IMG SRC="Gary -ggs2121/311logo.png" float = "right" ALT="image"  height="100" width="100">
+<IMG SRC="Gary-ggs2121/311logo.png" float = "right" ALT="image"  height="100" width="100">
 <br />
 <br />
 Detecting abnormal number of complaints helps us understand the city in a new way. We can connect complaints to the news to the weather to car collisions etc…
@@ -527,7 +527,7 @@ We wish to share this model with 311 agencies in order to help them manage their
 <center><font size="6" color ='#ffffff'> To solve "Chaos Days", NYC needs a "Chaos Team"" </font></center>
 <br />
 <br />
-<center><IMG SRC="Gary -ggs2121/chaosday-chaosteam.jpg" float = "center" ALT="image" height="550" width="800"></center>
+<center><IMG SRC="Gary-ggs2121/chaosday-chaosteam.jpg" float = "center" ALT="image" height="550" width="800"></center>
 <br />
 </div>
 
