@@ -1,3 +1,5 @@
+markdownHTMLOptions(options = c('base64_images'))
+
 <!--
 Required copyright information for w3c_slidy:
 
