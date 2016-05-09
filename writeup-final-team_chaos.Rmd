@@ -1,5 +1,3 @@
-markdownHTMLOptions(options = c('base64_images'))
-
 <!--
 Required copyright information for w3c_slidy:
 
@@ -33,7 +31,7 @@ Required copyright information for w3c_slidy:
 </div>
 <div class="slide cover title">
 <span style="float:left;width: 100%;">
-  <IMG SRC="Gary -ggs2121/Front slide.png" float = "left" ALT="image">
+  <IMG SRC="https://github.com/gary159/Edav-P4/Gary\ -ggs2121/Front\ slide.png" float = "left" ALT="image">
   </span>
 <br />
 <br />
